@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Watch Anime together, yay</title>
+  <meta charset="utf-8">
+  <!-- <link rel="stylesheet" type="text/css" href=""> -->
+
+  <!-- development version, includes helpful console warnings -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="./query.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th v-for="user in sortedUsers">
+            {{ user.name }}
+          </th>
+          <th>
+            Latest
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="entry in entries"
+            v-if="entry.users.size > 1"
+            v-bind:class="{releasing: entry.media.status === 'RELEASING'}">
+          <td>
+            {{ entry.media.title.userPreferred }}
+          </td>
+          <td v-for="user in sortedUsers"
+              v-if="entry.users.has(user.name)"
+              v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED'}"
+              v-bind:title="entry.users.get(user.name).score + ' / 10'">
+          <!-- <td v-for="user in sortedUsers"> -->
+            {{ entry.users.has(user.name) ? entry.users.get(user.name).progress : "" }}
+          </td>
+          <td v-else></td>
+          <td>
+            {{ entry.media.nextAiringEpisode
+               && entry.media.nextAiringEpisode.episode > 0
+               ? entry.media.nextAiringEpisode.episode - 1
+               : (entry.media.episodes || "?") }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        // would like to use Maps, but Vue doesn't support those in v-for
+        // https://github.com/vuejs/vue/issues/2410
+        sourceEntries: {},
+        entriesChangeTracker: 1,
+        users: {},
+      },
+      computed: {
+        entries () {
+          this.entriesChangeTracker
+          let dstEntries = new Map()
+          for (let [userName, srcEntries] of Object.entries(this.sourceEntries)) {
+            for (let {media, ...rest} of srcEntries) {
+              if (!dstEntries.has(media.id)) {
+                dstEntries.set(media.id, {media: media, users: new Map()})
+              }
+              dstEntries.get(media.id).users.set(userName, rest)
+            }
+          }
+
+          let ret = Array.from(dstEntries.values())
+          ret.sort((a, b) => {
+            return a.media.title.userPreferred.localeCompare(b.media.title.userPreferred)
+          })
+          return ret
+        },
+        sortedUsers () {
+          this.entriesChangeTracker
+          let userList = Array.from(Object.values(this.users))
+          userList.sort((a, b) => {
+            return a.name.localeCompare(b.name)
+          })
+          return userList
+        }
+      },
+      created () {
+        for (let userName of ["FichteFoll", "Firebird97", "Gattix"]) {
+          getMediaList(userName, "CURRENT")
+            // TODO handle errors
+            .then(json => {
+              console.log("results for user", userName, json)
+              const entries = json.data.MediaListCollection.lists.reduce(
+                (sum, x) => sum.concat(x.entries), []
+              )
+              if (entries.length === 0) {
+                // TODO warn visibly
+                console.warn(`List for ${userName} is empty!`)
+                return
+              }
+              const user = json.data.MediaListCollection.user
+              this.sourceEntries[user.name] = entries
+              // this.sourceEntries = Object.assign({}, this.sourceEntries, { [user.name]: entries })
+              this.users[user.name] = user
+              this.entriesChangeTracker += 1
+            })
+          // TODO update only after all lists are fetched, not each
+        }
+      },
+    })
+  </script>
+</body>
+</html>
