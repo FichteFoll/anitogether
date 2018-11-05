@@ -57,6 +57,8 @@ const app = new Vue({
         // TODO handle errors
         .then(json => {
           console.log("results for users", userNames, json)
+          this.sourceEntries = {}
+          this.users = {}
           for (const collection of Object.values(json.data)) {
             // discard custom lists as they have duplicates
             const user = collection.user
