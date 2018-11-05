@@ -1,45 +1,51 @@
-var query = `
-query WatchingProgress($userName: String, $status: [MediaListStatus]) {
-  MediaListCollection(status_in: $status, userName: $userName, type: ANIME) {
-    user {
-      id
-      name
-      avatar {
-        medium
-      }
-    }
-    lists {
-      entries {
-        media {
+function buildQuery(userNames) {
+  var query = `query WatchingProgress($status: [MediaListStatus]) {`
+  for (const [i, userName] of userNames.entries()) {
+    query += `
+      user${i}: MediaListCollection(status_in: $status, userName: "${userName}", type: ANIME) {
+        user {
           id
-          title {
-            romaji
-            english
-            native
-            userPreferred
+          name
+          avatar {
+            medium
           }
-          synonyms
-          episodes
-          nextAiringEpisode {
-            episode
-          }
-          status
         }
-        status
-        score
-        progress
-      }
-    }
+        lists {
+          isCustomList
+          entries {
+            media {
+              id
+              title {
+                romaji
+                english
+                native
+                userPreferred
+              }
+              synonyms
+              episodes
+              nextAiringEpisode {
+                episode
+              }
+              status
+            }
+            status
+            score
+            progress
+          }
+        }
+      }`
   }
+  query += "\n}"
+  console.log(query)
+  return query
 }
-`;
 
-function getMediaList(name, status, handleData) {
+function getMediaLists(userNames, status, handleData) {
   var variables = {
-    userName: name,
     status: status,
   }
 
+  // TODO build query for multiple users
   var url = 'https://graphql.anilist.co',
     options = {
       method: 'POST',
@@ -49,7 +55,7 @@ function getMediaList(name, status, handleData) {
         'Origin': 'https://anilist.co',
       },
       body: JSON.stringify({
-        query: query,
+        query: buildQuery(userNames),
         variables: variables,
       })
     }

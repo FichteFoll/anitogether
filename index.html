@@ -50,68 +50,6 @@
     </table>
   </div>
 
-  <script>
-    const app = new Vue({
-      el: '#app',
-      data: {
-        // would like to use Maps, but Vue doesn't support those in v-for
-        // https://github.com/vuejs/vue/issues/2410
-        sourceEntries: {},
-        entriesChangeTracker: 1,
-        users: {},
-      },
-      computed: {
-        entries () {
-          this.entriesChangeTracker
-          let dstEntries = new Map()
-          for (let [userName, srcEntries] of Object.entries(this.sourceEntries)) {
-            for (let {media, ...rest} of srcEntries) {
-              if (!dstEntries.has(media.id)) {
-                dstEntries.set(media.id, {media: media, users: new Map()})
-              }
-              dstEntries.get(media.id).users.set(userName, rest)
-            }
-          }
-
-          let ret = Array.from(dstEntries.values())
-          ret.sort((a, b) => {
-            return a.media.title.userPreferred.localeCompare(b.media.title.userPreferred)
-          })
-          return ret
-        },
-        sortedUsers () {
-          this.entriesChangeTracker
-          let userList = Array.from(Object.values(this.users))
-          userList.sort((a, b) => {
-            return a.name.localeCompare(b.name)
-          })
-          return userList
-        }
-      },
-      created () {
-        for (let userName of ["FichteFoll", "Firebird97", "Gattix"]) {
-          getMediaList(userName, "CURRENT")
-            // TODO handle errors
-            .then(json => {
-              console.log("results for user", userName, json)
-              const entries = json.data.MediaListCollection.lists.reduce(
-                (sum, x) => sum.concat(x.entries), []
-              )
-              if (entries.length === 0) {
-                // TODO warn visibly
-                console.warn(`List for ${userName} is empty!`)
-                return
-              }
-              const user = json.data.MediaListCollection.user
-              this.sourceEntries[user.name] = entries
-              // this.sourceEntries = Object.assign({}, this.sourceEntries, { [user.name]: entries })
-              this.users[user.name] = user
-              this.entriesChangeTracker += 1
-            })
-          // TODO update only after all lists are fetched, not each
-        }
-      },
-    })
-  </script>
+  <script src="./app.js"></script>
 </body>
 </html>
