@@ -50,7 +50,7 @@ const app = new Vue({
       if (this.usersInput === "") return;
       location.assign(location.origin + location.pathname + location.search
                       + "#users=" + this.usersInput)
-      const userNames = this.usersInput.split(",")
+      const userNames = this.usersInput.split(",").map(x => x.trim())
       document.title = `AniTogether - ${userNames.join(", ")}`
       getMediaLists(userNames, "CURRENT")
         // TODO handle errors
