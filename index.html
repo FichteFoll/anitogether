@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Watch Anime together, yay</title>
+  <title>AniTogether</title>
   <meta charset="utf-8">
   <!-- <link rel="stylesheet" type="text/css" href=""> -->
 
@@ -10,12 +10,16 @@
   <script src="./query.js"></script>
 </head>
 
-<body>
+<body onhashchange="app.fetchLists()">
   <div id="app">
+      <input type="text"
+        v-model.lazy="usersInput"
+        @change="fetchLists"
+        placeholder="Anilist usernames, separated by comma">
     <table>
       <thead>
         <tr>
-          <th>Title</th>
+          <th>Anime</th>
           <th v-for="user in sortedUsers">
             {{ user.name }}
           </th>
@@ -36,7 +40,7 @@
               v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED'}"
               v-bind:title="entry.users.get(user.name).score + ' / 10'">
           <!-- <td v-for="user in sortedUsers"> -->
-            {{ entry.users.has(user.name) ? entry.users.get(user.name).progress : "" }}
+            {{ entry.users.get(user.name).progress || "" }}
           </td>
           <td v-else></td>
           <td>
