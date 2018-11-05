@@ -48,9 +48,8 @@ const app = new Vue({
     fetchLists () {
       console.log("fetching", this.usersInput)
       if (this.usersInput === "") return;
-      // or location.assign()
-      location.replace(location.origin + location.pathname + location.search
-                       + "#users=" + this.usersInput)
+      location.assign(location.origin + location.pathname + location.search
+                      + "#users=" + this.usersInput)
       const userNames = this.usersInput.split(",")
       document.title = `AniTogether - ${userNames.join(", ")}`
       getMediaLists(userNames, "CURRENT")
