@@ -13,9 +13,9 @@
 <body onhashchange="app.fetchLists()">
   <div id="app">
       <input type="text"
-        v-model.lazy="usersInput"
-        @change="fetchLists"
-        placeholder="Anilist usernames, separated by comma">
+          v-model.lazy="usersInput"
+          @change="fetchLists"
+          placeholder="Anilist usernames, separated by comma">
     <table>
       <thead>
         <tr>
@@ -31,23 +31,23 @@
       <tbody>
         <tr v-for="entry in entries"
             v-if="entry.users.size > 1"
-            v-bind:class="{releasing: entry.media.status === 'RELEASING'}">
+            class="title"
+            v-bind:class="{releasing: entry.media.status === 'RELEASING',
+                           finished: entry.media.status === 'FINISHED'}">
           <td>
             {{ entry.media.title.userPreferred }}
           </td>
           <td v-for="user in sortedUsers"
               v-if="entry.users.has(user.name)"
-              v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED'}"
+              class="progress"
+              v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
+                             latest: entry.users.get(user.name).progress === entry.media.latestEpisode }"
               v-bind:title="entry.users.get(user.name).score + ' / 10'">
-          <!-- <td v-for="user in sortedUsers"> -->
             {{ entry.users.get(user.name).progress || "" }}
           </td>
           <td v-else></td>
           <td>
-            {{ entry.media.nextAiringEpisode
-               && entry.media.nextAiringEpisode.episode > 0
-               ? entry.media.nextAiringEpisode.episode - 1
-               : (entry.media.episodes || "?") }}
+            {{ entry.media.latestEpisode }}
           </td>
         </tr>
       </tbody>

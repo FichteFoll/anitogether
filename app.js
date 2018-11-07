@@ -18,6 +18,12 @@ const app = new Vue({
       for (const [userName, srcEntries] of Object.entries(this.sourceEntries)) {
         for (const {media, ...rest} of srcEntries) {
           if (!dstEntries.has(media.id)) {
+            if (!media.latestEpisode) {
+              media.latestEpisode =
+                (media.nextAiringEpisode && media.nextAiringEpisode.episode > 0)
+                ? media.nextAiringEpisode.episode - 1
+                : (media.episodes || "?")
+            }
             dstEntries.set(media.id, {media: media, users: new Map()})
           }
           dstEntries.get(media.id).users.set(userName, rest)
