@@ -139,7 +139,7 @@ const app = new Vue({
       return Array.from(inputSet)
     },
     /**
-     * Update userHistor in localStorage.
+     * Update userHistory in localStorage.
      * @param  {Array} userNames Names to add.
      */
     updateUserHistory (userNames) {
@@ -148,7 +148,9 @@ const app = new Vue({
       userArray.sort((a, b) => {
         return a.localeCompare(b)
       })
-      this.userHistory = userArray
+      if (this.userHistory.toString() !== userArray.toString()) {
+        this.userHistory = userArray
+      }
     },
     clearUserHistory () {
       this.userHistory = []
