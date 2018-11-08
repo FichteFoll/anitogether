@@ -20,11 +20,6 @@ Thanks to [AniList][] and its very usable API.
 
 # TODO
 
-- make an actual design
-  - highlight airing and finished anime
-  - highlight when no user has seen the latest episode
-  - highlight when user is behind
-  - render user avatars
 - option to include PAUSED anime and highlight this in the table
 - explore more visual approach where columns are the episode number
   and the user's avatar is inserted in the cells; needs smart collapsing
