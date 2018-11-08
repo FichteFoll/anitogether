@@ -24,6 +24,7 @@ const app = new Vue({
     userHistory: oldUserHistory,
     titleFormat: "romaji",
     disabled: true,
+    minShared: 2,
   },
   computed: {
     entries () {
@@ -185,7 +186,8 @@ const app = new Vue({
   },
 })
 
-
+$('.ui.radio.checkbox')
+  .checkbox()
 $('#user-dropdown')
   .dropdown({
     allowAdditions: true,

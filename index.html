@@ -79,8 +79,44 @@
           <!-- TODO search results from anilist? -->
         </div>
       </div>
+
+      <div class="ui sub header">Settings</div>
+      <div class="ui accordion">
+        <div class="title"></div>
+      </div>
+      <div class="ui form">
+        <div class="fields">
+          <div class="field inline fields">
+            <label for="format">Title Format:</label>
+            <div class="field">
+              <div class="ui radio checkbox">
+                <input type="radio" name="format" value="romaji" v-model="titleFormat">
+                <label>Romaji</label>
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui radio checkbox">
+                <input type="radio" name="format" value="english" v-model="titleFormat">
+                <label>English</label>
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui radio checkbox">
+                <input type="radio" name="format" value="native" v-model="titleFormat">
+                <label>Native</label>
+              </div>
+            </div>
+          </div>
+          <div class="field fields ui input inline">
+            <label>Minimum number of shared Anime</label>
+            <input type="number" name="minShared" v-model="minShared" class="one wide">
+          </div>
+        </div>
+      </div>
     </div>
 
+    <div class="ui dividing header"></div>
+    <!-- <hr> -->
     <table id="table" class="ui table celled definition compact unstackable selectable">
       <thead>
         <tr>
