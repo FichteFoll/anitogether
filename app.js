@@ -22,6 +22,7 @@ const app = new Vue({
     users: {},
     usersInput: "",  // set this later
     userHistory: oldUserHistory,
+    titleFormat: "romaji",
   },
   computed: {
     entries () {
@@ -155,6 +156,10 @@ const app = new Vue({
     clearUserHistory () {
       this.userHistory = []
     },
+    getMediaTitle (media) {
+      // english and native may be null, so always fall back to romaji
+      return media.title[this.titleFormat] || media.title.romaji
+    }
   },
 })
 
