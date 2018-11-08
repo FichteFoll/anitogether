@@ -41,6 +41,14 @@ const app = new Vue({
           dstEntries.get(media.id).users.set(userName, rest)
         }
       }
+
+      // filter based on criteria
+      for (const [key, entry] of dstEntries.entries()) {
+        if (this.usersInputList.length > 1 && entry.users.size < 2) {
+          dstEntries.delete(key)
+        }
+      }
+
       for (let entry of dstEntries.values()) {
         const mUsers = Array.from(entry.users.values())
         entry.maxEpisode = Math.max(...mUsers.map(e => e.progress))

@@ -97,8 +97,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="entry of entries"
-            v-if="entry.users.size > 1">
+        <tr v-for="entry of entries">
           <th class="title"
               v-bind:class="{positive: entry.media.status === 'RELEASING',
                              finished: entry.media.status === 'FINISHED'}">
