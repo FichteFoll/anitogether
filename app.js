@@ -56,11 +56,12 @@ const app = new Vue({
   },
   methods: {
     fetchLists () {
-      console.log("fetching", this.usersInput)
-      if (this.usersInput === "") return;
+      // TODO sanitize input (and set back)
+      console.log("fetching with", this.usersInput)
+      const userNames = this.sanitizeInput(this.usersInput)
+      if (userNames.length === 0) return;
       location.assign(location.origin + location.pathname + location.search
-                      + "#users=" + this.usersInput)
-      const userNames = this.usersInput.split(",").map(x => x.trim())
+                      + "#users=" + userNames.join(","))
       document.title = `AniTogether - ${userNames.join(", ")}`
       getMediaLists(userNames, "CURRENT")
         // TODO handle errors
@@ -84,7 +85,18 @@ const app = new Vue({
             Vue.set(this.users, user.name, user)
           }
         })
-    }
+    },
+    /**
+     * Split a string by comma and remove duplicates.
+     * @param  {String} inputString The string to split.
+     * @return {Array}              Disjoined elements of the string.
+     */
+    sanitizeInput (inputString) {
+      const inputArray = inputString.split(",").map(x => x.trim())
+      let inputSet = new Set(inputArray)
+      inputSet.delete("")
+      return Array.from(inputSet)
+    },
   },
 })
 
