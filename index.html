@@ -44,7 +44,11 @@
         <i class="dropdown icon"></i>
         <div class="default text">Search users…</div>
         <div class="menu">
-          <!-- TODO fill with recently selected users -->
+          <div v-for="name of userHistory"
+              class="item"
+              v-bind:data-value="name">
+            {{ name }}
+          </div>
           <!-- TODO search results from anilist? -->
         </div>
 

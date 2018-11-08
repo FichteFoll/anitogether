@@ -3,6 +3,14 @@ const hash2Obj = location.hash.substring(1)
       .map(v => v.split("="))
       .reduce( (pre, [key, value]) => ({ ...pre, [key]: value }), {} )
 
+let oldUserHistory = []
+try {
+  const storageHistory = localStorage.getItem('userHistory') || ""
+  if (storageHistory !== "") {
+    oldUserHistory = storageHistory.split(',')
+  }
+} catch (e) {}
+
 const app = new Vue({
   el: '#app',
   data: {
@@ -10,7 +18,8 @@ const app = new Vue({
     // https://github.com/vuejs/vue/issues/2410
     sourceEntries: {},
     users: {},
-    usersInput: hash2Obj.users || ""
+    usersInput: hash2Obj.users || "",
+    userHistory: oldUserHistory,
   },
   computed: {
     entries () {
@@ -46,13 +55,17 @@ const app = new Vue({
         return a.name.localeCompare(b.name)
       })
       return userList
-    }
+    },
   },
   created () {
     this.fetchLists()
   },
-  onUsersInput() {
-    this.fetchLists()
+  watch: {
+    userHistory() {
+      try {
+        localStorage.setItem('userHistory', this.userHistory.join(','))
+      } catch (e) {}
+    }
   },
   methods: {
     fetchLists () {
@@ -63,6 +76,10 @@ const app = new Vue({
       location.assign(location.origin + location.pathname + location.search
                       + "#users=" + userNames.join(","))
       document.title = `AniTogether - ${userNames.join(", ")}`
+      // https://stackoverflow.com/questions/36612847/how-can-i-bind-the-html-title-content-in-vuejs
+      this.updateUserHistory(userNames)
+
+      // TODO add and remove loading icon
       getMediaLists(userNames, "CURRENT")
         // TODO handle errors
         .then(json => {
@@ -96,6 +113,18 @@ const app = new Vue({
       let inputSet = new Set(inputArray)
       inputSet.delete("")
       return Array.from(inputSet)
+    },
+    /**
+     * Update userHistor in localStorage.
+     * @param  {Array} userNames Names to add.
+     */
+    updateUserHistory (userNames) {
+      const userSet = new Set([this.userHistory, ...userNames])
+      let userArray = Array.from(userSet)
+      userArray.sort((a, b) => {
+        return a.localeCompare(b)
+      })
+      this.userHistory = userArray
     },
   },
 })
