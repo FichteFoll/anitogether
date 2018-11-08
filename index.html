@@ -87,7 +87,7 @@
           </td>
           <td v-else></td>
           <td class="latest"
-              v-bind:class="{ negative: entry.maxEpisode !== entry.media.latestEpisode }">
+              v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }">
             {{ entry.media.latestEpisode }}
           </td>
         </tr>
