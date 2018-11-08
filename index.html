@@ -19,7 +19,11 @@
   <style type="text/css">
     #app {
       margin: 2em;
-      max-width: 1000px;
+    }
+
+    #container {
+      max-width: 800px;
+      margin: auto;
     }
 
     th.title.positive {
@@ -35,7 +39,8 @@
 </head>
 
 <body onhashchange="app.fetchLists()">
-  <div id="app">
+  <div id="app" class="center aligned">
+  <div id="container" class="center aligned">
     <div id="input-container">
       <div class="ui sub header">Users</div>
       <div id="user-dropdown" class="ui fluid multiple search selection dropdown action">
@@ -56,19 +61,19 @@
       </div>
     </div>
 
-    <table id="table" class="ui table celled definition compact unstackable">
+    <table id="table" class="ui table celled definition compact unstackable selectable">
       <thead>
         <tr>
           <th>Anime</th>
           <th v-for="user of orderedUsers"
-              class="right aligned">
+              class="right aligned collapsing">
             <a v-bind:href="`https://anilist.co/user/${user.name}`">
               <img class="avatar"
                   v-bind:src="user.avatar.medium"
                   v-bind:title="user.name">
             </a>
           </th>
-          <th class="right aligned">Latest</th>
+          <th class="right aligned collapsing">Latest</th>
         </tr>
       </thead>
       <tbody>
@@ -81,14 +86,14 @@
           </th>
           <td v-for="user of orderedUsers"
               v-if="entry.users.has(user.name)"
-              class="episode progress right aligned"
+              class="episode progress right aligned collapsing"
               v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
                              negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
               v-bind:title="entry.users.get(user.name).score + ' / 10'">
             {{ entry.users.get(user.name).progress || "" }}
           </td>
           <td v-else></td>
-          <td class="episode latest right aligned"
+          <td class="episode latest right aligned collapsing"
               v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }">
             {{ entry.media.latestEpisode }}
           </td>
@@ -96,6 +101,7 @@
       </tbody>
       <!-- TODO footer with buttons to show/hide selected shows -->
     </table>
+  </div>
   </div>
 
   <script src="./app.js"></script>
