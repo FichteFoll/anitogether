@@ -11,6 +11,8 @@ try {
   }
 } catch (e) {}
 
+let lastUserList = []
+
 const app = new Vue({
   el: '#app',
   data: {
@@ -49,9 +51,9 @@ const app = new Vue({
       })
       return ret
     },
-    sortedUsers () {
-      let userList = Array.from(Object.values(this.users))
-      userList.sort((a, b) => {
+    usersInputList () {
+      return this.sanitizeInput(this.usersInput)
+    },
         return a.name.localeCompare(b.name)
       })
       return userList
@@ -70,8 +72,11 @@ const app = new Vue({
   },
   methods: {
     fetchLists () {
-      const userNames = this.sanitizeInput(this.usersInput)
+      const userNames = this.usersInputList
       if (userNames.length === 0) return;
+      if (userNames.toString() === lastUserList.toString()) return;
+      lastUserList = userNames
+
       console.log("fetching for", userNames)
       location.assign(location.origin + location.pathname + location.search
                       + "#users=" + userNames.join(","))
