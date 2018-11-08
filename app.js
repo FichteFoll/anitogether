@@ -20,7 +20,7 @@ const app = new Vue({
     // https://github.com/vuejs/vue/issues/2410
     sourceEntries: {},
     users: {},
-    usersInput: "",
+    usersInput: "",  // set this later
     userHistory: oldUserHistory,
   },
   computed: {
@@ -154,4 +154,6 @@ $('#user-dropdown')
     clearable: true,
     sortSelect: true,
   })
+// Update selected list later to work around
+// https://github.com/Semantic-Org/Semantic-UI/issues/3841
 $('.dropdown').dropdown('set selected', app.sanitizeInput(hash2Obj.users));
