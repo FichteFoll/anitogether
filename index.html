@@ -68,6 +68,14 @@
             {{ name }}
             <!-- TODO allow removing entries -->
           </div>
+          <div class="divider"></div>
+          <div class="header">
+            <button class="ui button tiny labeled icon compact"
+                @click="clearUserHistory">
+              <i class="icon delete"></i>
+              Clear history
+            </button>
+          </div>
           <!-- TODO search results from anilist? -->
         </div>
       </div>

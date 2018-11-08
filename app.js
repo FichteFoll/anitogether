@@ -150,6 +150,9 @@ const app = new Vue({
       })
       this.userHistory = userArray
     },
+    clearUserHistory () {
+      this.userHistory = []
+    },
   },
 })
 
