@@ -41,11 +41,11 @@
         <tr>
           <th>Anime</th>
           <th v-for="user in sortedUsers">
-            <!-- TODO avatar -->
-            <img class="avatar"
-                v-bind:src="user.avatar.medium"
-                v-bind:title="user.name">
-            <!-- {{ user.name }} -->
+            <a v-bind:href="`https://anilist.co/user/${user.name}`">
+              <img class="avatar"
+                  v-bind:src="user.avatar.medium"
+                  v-bind:title="user.name">
+            </a>
           </th>
           <th>
             Latest
