@@ -24,6 +24,7 @@ Thanks to [AniList][] and its very usable API.
 - Highlight anime with unwatched episodes
 - Highlight users that are behind compared to the "leader"
   (with the most episodes watched)
+- Save a list of previously entered user names for quick access
 
 ![Screenshot](./screenshot.png)
 
