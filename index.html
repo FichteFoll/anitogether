@@ -22,10 +22,6 @@
       max-width: 1000px;
     }
 
-    .ui.table .episode {
-      text-align: right;
-    }
-
     th.title.positive {
       color: hsl(93, 72%, 25%);
     }
@@ -33,10 +29,6 @@
     th .avatar {
       width: 32px;
       height: 32px;
-    }
-
-    .ui.table thead th:not(:first-child) {
-      text-align: right;
     }
   </style>
   <!-- <link rel="stylesheet" type="text/css" href="./style.css"> -->
@@ -68,14 +60,15 @@
       <thead>
         <tr>
           <th>Anime</th>
-          <th v-for="user of orderedUsers">
+          <th v-for="user of orderedUsers"
+              class="right aligned">
             <a v-bind:href="`https://anilist.co/user/${user.name}`">
               <img class="avatar"
                   v-bind:src="user.avatar.medium"
                   v-bind:title="user.name">
             </a>
           </th>
-          <th>Latest</th>
+          <th class="right aligned">Latest</th>
         </tr>
       </thead>
       <tbody>
@@ -88,14 +81,14 @@
           </th>
           <td v-for="user of orderedUsers"
               v-if="entry.users.has(user.name)"
-              class="episode progress"
+              class="episode progress right aligned"
               v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
                              negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
               v-bind:title="entry.users.get(user.name).score + ' / 10'">
             {{ entry.users.get(user.name).progress || "" }}
           </td>
           <td v-else></td>
-          <td class="episode latest"
+          <td class="episode latest right aligned"
               v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }">
             {{ entry.media.latestEpisode }}
           </td>
