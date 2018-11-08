@@ -87,7 +87,7 @@
           <th>Anime</th>
           <th v-for="user of orderedUsers"
               class="right aligned collapsing">
-            <a v-bind:href="`https://anilist.co/user/${user.name}`">
+            <a v-bind:href="`https://anilist.co/user/${user.name}`" target="_blank">
               <img class="avatar"
                   v-bind:src="user.avatar.medium"
                   v-bind:title="user.name">
@@ -101,7 +101,7 @@
           <th class="title"
               v-bind:class="{positive: entry.media.status === 'RELEASING',
                              finished: entry.media.status === 'FINISHED'}">
-            <a v-bind:href="`https://anilist.co/anime/${entry.media.id}`">
+            <a v-bind:href="`https://anilist.co/anime/${entry.media.id}`" target="_blank">
               {{ getMediaTitle(entry.media) }}
             </a>
           </th>
