@@ -29,6 +29,10 @@ const app = new Vue({
           dstEntries.get(media.id).users.set(userName, rest)
         }
       }
+      for (let entry of dstEntries.values()) {
+        const mUsers = Array.from(entry.users.values())
+        entry.maxEpisode = Math.max(...mUsers.map(e => e.progress))
+      }
 
       let ret = Array.from(dstEntries.values())
       ret.sort((a, b) => {

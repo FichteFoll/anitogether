@@ -3,11 +3,26 @@
 <head>
   <title>AniTogether</title>
   <meta charset="utf-8">
-  <!-- <link rel="stylesheet" type="text/css" href=""> -->
 
-  <!-- development version, includes helpful console warnings -->
+  <!-- Vue.js; development version (includes helpful console warnings) -->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- UI framework -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+  <!-- Custom -->
   <script src="./query.js"></script>
+  <style type="text/css">
+    .progress {
+      text-align: right;
+    }
+
+    .title.positive {
+      color: hsl(93, 72%, 25%);
+    }
+  </style>
+  <!-- <link rel="stylesheet" type="text/css" href="./style.css"> -->
 </head>
 
 <body onhashchange="app.fetchLists()">
@@ -16,11 +31,12 @@
           v-model.lazy="usersInput"
           @change="fetchLists"
           placeholder="Anilist usernames, separated by comma">
-    <table>
+    <table class="ui table celled definition compact">
       <thead>
         <tr>
           <th>Anime</th>
           <th v-for="user in sortedUsers">
+            <!-- TODO avatar -->
             {{ user.name }}
           </th>
           <th>
@@ -30,27 +46,27 @@
       </thead>
       <tbody>
         <tr v-for="entry in entries"
-            v-if="entry.users.size > 1"
-            class="title"
-            v-bind:class="{releasing: entry.media.status === 'RELEASING',
-                           finished: entry.media.status === 'FINISHED'}">
-          <td>
+            v-if="entry.users.size > 1">
+          <th class="title"
+              v-bind:class="{positive: entry.media.status === 'RELEASING',
+                             finished: entry.media.status === 'FINISHED'}">
             {{ entry.media.title.userPreferred }}
-          </td>
+          </th>
           <td v-for="user in sortedUsers"
               v-if="entry.users.has(user.name)"
               class="progress"
               v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
-                             latest: entry.users.get(user.name).progress === entry.media.latestEpisode }"
+                             negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
               v-bind:title="entry.users.get(user.name).score + ' / 10'">
             {{ entry.users.get(user.name).progress || "" }}
           </td>
           <td v-else></td>
-          <td>
+          <td v-bind:class="{ negative: entry.maxEpisode !== entry.media.latestEpisode }">
             {{ entry.media.latestEpisode }}
           </td>
         </tr>
       </tbody>
+      <!-- TODO footer with buttons to show/hide selected shows -->
     </table>
   </div>
 
