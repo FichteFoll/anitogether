@@ -73,10 +73,16 @@ const app = new Vue({
   },
   watch: {
     userHistory() {
-      try {
-        localStorage.setItem('userHistory', this.userHistory.join(','))
-      } catch (e) {}
-      $('#user-dropdown').dropdown('refresh')
+      setTimeout(() => {
+        // Delay execution so the DOM is changed
+        // before we ask the dropdown to refresh the selected items.
+        try {
+          localStorage.setItem('userHistory', this.userHistory.join(','))
+        } catch (e) {}
+        // $('#user-dropdown').dropdown('refresh')
+        $('#user-dropdown').dropdown('set selected', this.usersInputList)
+        this.addRemoveIcons()
+      })
     }
   },
   methods: {
