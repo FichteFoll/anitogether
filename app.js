@@ -65,14 +65,14 @@ const app = new Vue({
       try {
         localStorage.setItem('userHistory', this.userHistory.join(','))
       } catch (e) {}
+      $('#user-dropdown').dropdown('refresh')
     }
   },
   methods: {
     fetchLists () {
-      // TODO sanitize input (and set back)
-      console.log("fetching with", this.usersInput)
       const userNames = this.sanitizeInput(this.usersInput)
       if (userNames.length === 0) return;
+      console.log("fetching for", userNames)
       location.assign(location.origin + location.pathname + location.search
                       + "#users=" + userNames.join(","))
       document.title = `AniTogether - ${userNames.join(", ")}`
@@ -81,7 +81,6 @@ const app = new Vue({
 
       // TODO add and remove loading icon
       getMediaLists(userNames, "CURRENT")
-        // TODO handle errors
         .then(json => {
           console.log("results for users", userNames, json)
           this.sourceEntries = {}
