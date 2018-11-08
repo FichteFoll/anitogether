@@ -36,23 +36,21 @@ function buildQuery(userNames) {
       }`
   }
   query += "\n}"
-  console.log(query)
   return query
 }
 
-function getMediaLists(userNames, status, handleData) {
+function getMediaLists(userNames, status) {
   var variables = {
     status: status,
   }
 
-  // TODO build query for multiple users
   var url = 'https://graphql.anilist.co',
     options = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Origin': 'https://anilist.co',
+        // 'Origin': 'https://anilist.co',
       },
       body: JSON.stringify({
         query: buildQuery(userNames),
@@ -61,17 +59,7 @@ function getMediaLists(userNames, status, handleData) {
     }
 
   return (fetch(url, options)
-    .then(handleResponse)
-    .then(handleData)
-    .catch(handleError))
-}
-
-
-function handleResponse(response) {
-  return response.json().then(json => response.ok ? json : Promise.reject(json))
-}
-
-function handleError(error) {
-  alert('Error, check console')
-  console.error(error)
+    .then(response => {
+      return response.json().then(json => response.ok ? json : Promise.reject(json))
+    }))
 }

@@ -101,6 +101,11 @@ const app = new Vue({
             Vue.set(this.users, user.name, user)
           }
         })
+        .catch(error => {
+          // TODO display errors
+          alert('Error, check console')
+          console.error(error)
+        })
     },
     /**
      * Split a string by comma and remove duplicates.
