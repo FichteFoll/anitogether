@@ -8,6 +8,9 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
   <!-- UI framework -->
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
   <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
 
@@ -32,11 +35,28 @@
 
 <body onhashchange="app.fetchLists()">
   <div id="app">
-      <input type="text"
-          v-model.lazy="usersInput"
-          @change="fetchLists"
-          placeholder="Anilist usernames, separated by comma">
-    <table class="ui table celled definition compact">
+    <div id="input-container">
+      <div class="ui sub header">Users</div>
+      <div id="user-dropdown" class="ui fluid multiple search selection dropdown action">
+        <input name="users" type="hidden"
+            v-model.lazy="usersInput"
+            @change="fetchLists">
+        <i class="dropdown icon"></i>
+        <div class="default text">Search users…</div>
+        <div class="menu">
+          <!-- TODO fill with recently selected users -->
+          <!-- TODO search results from anilist? -->
+        </div>
+
+      </div>
+      <button class="ui button"
+          data-_extension-text-contrast=""
+          @click="fetchLists">
+        Update
+      </button>
+
+    </div>
+    <table id="table" class="ui table celled definition compact">
       <thead>
         <tr>
           <th>Anime</th>

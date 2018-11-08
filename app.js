@@ -87,3 +87,9 @@ const app = new Vue({
     }
   },
 })
+
+
+$('#user-dropdown')
+  .dropdown({
+    allowAdditions: true
+  })
