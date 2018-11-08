@@ -20,7 +20,7 @@ const app = new Vue({
     // https://github.com/vuejs/vue/issues/2410
     sourceEntries: {},
     users: {},
-    usersInput: hash2Obj.users || "",
+    usersInput: "",
     userHistory: oldUserHistory,
   },
   computed: {
@@ -54,9 +54,18 @@ const app = new Vue({
     usersInputList () {
       return this.sanitizeInput(this.usersInput)
     },
-        return a.name.localeCompare(b.name)
-      })
-      return userList
+    /**
+     * Order users in entries by user input.
+     * @return {Array[Object]} Sorted user objects.
+     */
+    orderedUsers () {
+      let orderedUsers = []
+      for (const name of this.usersInputList) {
+        if (!!this.users[name]) {
+          orderedUsers.push(this.users[name])
+        }
+      }
+      return orderedUsers
     },
   },
   created () {
@@ -141,5 +150,8 @@ const app = new Vue({
 
 $('#user-dropdown')
   .dropdown({
-    allowAdditions: true
+    allowAdditions: true,
+    clearable: true,
+    sortSelect: true,
   })
+$('.dropdown').dropdown('set selected', app.sanitizeInput(hash2Obj.users));

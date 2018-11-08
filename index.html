@@ -81,7 +81,7 @@
                              finished: entry.media.status === 'FINISHED'}">
             {{ entry.media.title.userPreferred }}
           </th>
-          <td v-for="user in sortedUsers"
+          <td v-for="user of orderedUsers"
               v-if="entry.users.has(user.name)"
               class="progress"
               v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
