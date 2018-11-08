@@ -14,7 +14,7 @@
   <!-- Custom -->
   <script src="./query.js"></script>
   <style type="text/css">
-    .progress {
+    .ui.table .progress, .ui.table .latest {
       text-align: right;
     }
 
@@ -69,7 +69,8 @@
             {{ entry.users.get(user.name).progress || "" }}
           </td>
           <td v-else></td>
-          <td v-bind:class="{ negative: entry.maxEpisode !== entry.media.latestEpisode }">
+          <td class="latest"
+              v-bind:class="{ negative: entry.maxEpisode !== entry.media.latestEpisode }">
             {{ entry.media.latestEpisode }}
           </td>
         </tr>
