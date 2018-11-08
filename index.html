@@ -21,6 +21,11 @@
     .title.positive {
       color: hsl(93, 72%, 25%);
     }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+    }
   </style>
   <!-- <link rel="stylesheet" type="text/css" href="./style.css"> -->
 </head>
@@ -37,7 +42,10 @@
           <th>Anime</th>
           <th v-for="user in sortedUsers">
             <!-- TODO avatar -->
-            {{ user.name }}
+            <img class="avatar"
+                v-bind:src="user.avatar.medium"
+                v-bind:title="user.name">
+            <!-- {{ user.name }} -->
           </th>
           <th>
             Latest
