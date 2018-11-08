@@ -12,6 +12,7 @@ const hash2Obj = location.hash.substring(1)
         {}
       )
 
+let oldParams = {...defaults, ...hash2Obj}
 let oldUserHistory = []
 try {
   const storageHistory = localStorage.getItem('userHistory') || ""
@@ -31,9 +32,9 @@ const app = new Vue({
     users: {},
     usersInput: "",  // set this later
     userHistory: oldUserHistory,
-    titleFormat: hash2Obj.format || defaults.minShared,
+    titleFormat: oldParams.format,
     disabled: true,
-    minShared: hash2Obj.minShared || defaults.minShared,
+    minShared: oldParams.minShared,
   },
   computed: {
     entries () {
@@ -202,15 +203,24 @@ const app = new Vue({
         format: this.titleFormat,
         minShared: this.minShared,
       }
-      let hash = `#`
-      for (const [param, value] of Object.entries(params)) {
-        if (value != defaults[param]) {
-          hash += `${param}=${encodeURIComponent(value)}&`
-        }
-      }
-      hash = hash.substring(0, hash.length - 1)
-      location.assign(location.origin + location.pathname
-                      + location.search + hash)
+      const changeFor = new Set(["users"])
+
+      let hash = "#" + Object.entries(params)
+        .filter(([k, v]) => v != defaults[k])
+        .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+        .join('&')
+      const newUrl = location.origin + location.pathname + location.search + hash
+
+      const shouldChange = Object.entries(params)
+        .filter(([k, v]) => v != oldParams[k])
+        .every(([k]) => changeFor.has(k))
+
+      if (shouldChange)
+        location.assign(newUrl)
+      else
+        location.replace(newUrl)
+
+      oldParams = params
     },
   },
 })
@@ -223,4 +233,4 @@ $('#user-dropdown')
     clearable: true,
     sortSelect: true,
   })
-app.setDropdownItems(app.sanitizeInput(hash2Obj.users || defaults.users))
+app.setDropdownItems(app.sanitizeInput(oldParams.users))
