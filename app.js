@@ -23,6 +23,7 @@ const app = new Vue({
     usersInput: "",  // set this later
     userHistory: oldUserHistory,
     titleFormat: "romaji",
+    disabled: true,
   },
   computed: {
     entries () {
@@ -88,14 +89,13 @@ const app = new Vue({
         try {
           localStorage.setItem('userHistory', this.userHistory.join(','))
         } catch (e) {}
-        // $('#user-dropdown').dropdown('refresh')
-        $('#user-dropdown').dropdown('set selected', this.usersInputList)
-        this.addRemoveIcons()
+        app.setDropdownItems(this.usersInputList)
       })
     }
   },
   methods: {
     fetchLists () {
+      if (this.disabled) return;
       const userNames = this.usersInputList
       if (userNames.length === 0) return;
       if (userNames.toString() === lastUserList.toString()) return;
@@ -167,6 +167,20 @@ const app = new Vue({
     getMediaTitle (media) {
       // english and native may be null, so always fall back to romaji
       return media.title[this.titleFormat] || media.title.romaji
+    },
+    /**
+     * Set selected items in dropdown list.
+     * Needed to preserve order because directly setting the input
+     * loops over the wrong list first.
+     * See https://github.com/Semantic-Org/Semantic-UI/issues/3841.
+     *
+     * @param {Array} items Items to set (user names).
+     */
+    setDropdownItems (items) {
+      app.disabled = true
+      $('.dropdown').dropdown('set selected', items);
+      app.disabled = false // dunno why this doesn't trigger fetchLists
+      app.fetchLists()
     }
   },
 })
@@ -178,6 +192,4 @@ $('#user-dropdown')
     clearable: true,
     sortSelect: true,
   })
-// Update selected list later to work around
-// https://github.com/Semantic-Org/Semantic-UI/issues/3841
-$('.dropdown').dropdown('set selected', app.sanitizeInput(hash2Obj.users));
+app.setDropdownItems(app.sanitizeInput(hash2Obj.users))
