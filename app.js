@@ -1,7 +1,16 @@
+const defaults = {
+  format: "romaji",
+  minShared: 2,
+  users: ""
+}
+
 const hash2Obj = location.hash.substring(1)
       .split("&")
       .map(v => v.split("="))
-      .reduce( (pre, [key, value]) => ({ ...pre, [key]: value }), {} )
+      .reduce(
+        (pre, [key, value]) => ({ ...pre, [key]: decodeURIComponent(value) }),
+        {}
+      )
 
 let oldUserHistory = []
 try {
@@ -22,9 +31,9 @@ const app = new Vue({
     users: {},
     usersInput: "",  // set this later
     userHistory: oldUserHistory,
-    titleFormat: "romaji",
+    titleFormat: hash2Obj.format || defaults.minShared,
     disabled: true,
-    minShared: 2,
+    minShared: hash2Obj.minShared || defaults.minShared,
   },
   computed: {
     entries () {
@@ -46,7 +55,7 @@ const app = new Vue({
 
       // filter based on criteria
       for (const [key, entry] of dstEntries.entries()) {
-        if (this.usersInputList.length > 1 && entry.users.size < 2) {
+        if (this.usersInputList.length > 1 && entry.users.size < this.minShared) {
           dstEntries.delete(key)
         }
       }
@@ -83,7 +92,7 @@ const app = new Vue({
     this.fetchLists()
   },
   watch: {
-    userHistory() {
+    userHistory () {
       setTimeout(() => {
         // Delay execution so the DOM is changed
         // before we ask the dropdown to refresh the selected items.
@@ -92,7 +101,10 @@ const app = new Vue({
         } catch (e) {}
         app.setDropdownItems(this.usersInputList)
       })
-    }
+    },
+    minShared () { this.updateLocation() },
+    usersInputList () { this.updateLocation() },
+    titleFormat () { this.updateLocation() },
   },
   methods: {
     fetchLists () {
@@ -103,8 +115,6 @@ const app = new Vue({
       lastUserList = userNames
 
       console.log("fetching for", userNames)
-      location.assign(location.origin + location.pathname + location.search
-                      + "#users=" + userNames.join(","))
       document.title = `AniTogether - ${userNames.join(", ")}`
       // https://stackoverflow.com/questions/36612847/how-can-i-bind-the-html-title-content-in-vuejs
       this.updateUserHistory(userNames)
@@ -182,7 +192,26 @@ const app = new Vue({
       $('.dropdown').dropdown('set selected', items);
       app.disabled = false // dunno why this doesn't trigger fetchLists
       app.fetchLists()
-    }
+    },
+    /**
+     * Update location hash parameters.
+     */
+    updateLocation () {
+      const params = {
+        users: this.usersInputList.join(","),
+        format: this.titleFormat,
+        minShared: this.minShared,
+      }
+      let hash = `#`
+      for (const [param, value] of Object.entries(params)) {
+        if (value != defaults[param]) {
+          hash += `${param}=${encodeURIComponent(value)}&`
+        }
+      }
+      hash = hash.substring(0, hash.length - 1)
+      location.assign(location.origin + location.pathname
+                      + location.search + hash)
+    },
   },
 })
 
@@ -194,4 +223,4 @@ $('#user-dropdown')
     clearable: true,
     sortSelect: true,
   })
-app.setDropdownItems(app.sanitizeInput(hash2Obj.users))
+app.setDropdownItems(app.sanitizeInput(hash2Obj.users || defaults.users))
