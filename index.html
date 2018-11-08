@@ -17,15 +17,20 @@
   <!-- Custom -->
   <script src="./query.js"></script>
   <style type="text/css">
-    .ui.table .progress, .ui.table .latest {
+    #app {
+      margin: 2em;
+      max-width: 1000px;
+    }
+
+    .ui.table .episode {
       text-align: right;
     }
 
-    .title.positive {
+    th.title.positive {
       color: hsl(93, 72%, 25%);
     }
 
-    .avatar {
+    th .avatar {
       width: 32px;
       height: 32px;
     }
@@ -52,29 +57,29 @@
               class="item"
               v-bind:data-value="name">
             {{ name }}
+            <!-- TODO allow removing entries -->
           </div>
           <!-- TODO search results from anilist? -->
         </div>
       </div>
     </div>
+
     <table id="table" class="ui table celled definition compact">
       <thead>
         <tr>
           <th>Anime</th>
-          <th v-for="user in sortedUsers">
+          <th v-for="user of orderedUsers">
             <a v-bind:href="`https://anilist.co/user/${user.name}`">
               <img class="avatar"
                   v-bind:src="user.avatar.medium"
                   v-bind:title="user.name">
             </a>
           </th>
-          <th>
-            Latest
-          </th>
+          <th>Latest</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="entry in entries"
+        <tr v-for="entry of entries"
             v-if="entry.users.size > 1">
           <th class="title"
               v-bind:class="{positive: entry.media.status === 'RELEASING',
@@ -83,14 +88,14 @@
           </th>
           <td v-for="user of orderedUsers"
               v-if="entry.users.has(user.name)"
-              class="progress"
+              class="episode progress"
               v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
                              negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
               v-bind:title="entry.users.get(user.name).score + ' / 10'">
             {{ entry.users.get(user.name).progress || "" }}
           </td>
           <td v-else></td>
-          <td class="latest"
+          <td class="episode latest"
               v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }">
             {{ entry.media.latestEpisode }}
           </td>
