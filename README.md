@@ -1,7 +1,6 @@
 # AniTogether
 
 Use me: <https://fichtefoll.github.io/anitogether/>
-(very WIP, no styling)
 
 When watching (airing) anime together,
 but you don't know how far in you are,
@@ -20,7 +19,11 @@ Thanks to [AniList][] and its very usable API.
 
 # TODO
 
+- allow removing individual history entries
+- allow hiding and unhiding anime (and preserve in url, prolly by id)
+- cache per-user results so changing the order or adding/removing
+  doesn't request data for ALL users again
 - option to include PAUSED anime and highlight this in the table
 - explore more visual approach where columns are the episode number
   and the user's avatar is inserted in the cells; needs smart collapsing
-- allow hiding and unhiding anime (and preserve in url, prolly by id)
+- something for PLANNED shows
