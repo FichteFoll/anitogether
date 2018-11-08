@@ -34,6 +34,18 @@
       width: 32px;
       height: 32px;
     }
+
+    /* Must be on th because of chrome (and edge) bug
+     * https://caniuse.com/#feat=css-sticky
+     */
+    #table thead th {
+      position: sticky;
+      top: 0;
+    }
+    #table thead th:first-child {
+      /* Otherwise background is transparent */
+      background: white;
+    }
   </style>
   <!-- <link rel="stylesheet" type="text/css" href="./style.css"> -->
 </head>
