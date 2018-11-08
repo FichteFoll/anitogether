@@ -119,7 +119,7 @@ const app = new Vue({
      * @param  {Array} userNames Names to add.
      */
     updateUserHistory (userNames) {
-      const userSet = new Set([this.userHistory, ...userNames])
+      const userSet = new Set([...this.userHistory, ...userNames])
       let userArray = Array.from(userSet)
       userArray.sort((a, b) => {
         return a.localeCompare(b)
