@@ -41,8 +41,11 @@ try {
   console.log("Unable to access localStorage")
 }
 
-// state tracking
+// State tracking
 let lastUserList = []
+// Not in 'data' segment because changed from computed property
+// and would result in a cycle.
+let belowThreshold = 0
 
 
 const app = new Vue({
@@ -65,6 +68,7 @@ const app = new Vue({
   computed: {
     entries () {
       const dstEntries = new Map()
+      belowThreshold = 0
       for (const [userName, srcEntries] of Object.entries(this.sourceEntries)) {
         for (const {media, ...rest} of srcEntries) {
           if (!dstEntries.has(media.id)) {
@@ -84,6 +88,7 @@ const app = new Vue({
       for (const [key, entry] of dstEntries.entries()) {
         if (this.usersInputList.length > 1 && entry.users.size < this.minShared) {
           dstEntries.delete(key)
+          belowThreshold += 1
         }
         entry.media.visible = this.hiddenEntries.indexOf(entry.media.id) === -1
       }
@@ -124,6 +129,7 @@ const app = new Vue({
         countReleasing: visibleEntries
           .filter(({media}) => media.status === 'RELEASING').length,
         hidden: this.entries.length - visibleEntries.length,
+        belowThreshold,
       }
     },
   },
