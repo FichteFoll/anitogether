@@ -1,6 +1,19 @@
 /* global Vue:false, $:false, getMediaLists:false */
 'use strict'
 
+/**
+ * Split a string by comma and remove duplicates.
+ * @param  {String} inputString The string to split.
+ * @return {Array}              Disjoined elements of the string.
+ */
+function sanitizeInput (inputString) {
+  const inputArray = inputString.split(",").map(x => x.trim())
+  const inputSet = new Set(inputArray)
+  inputSet.delete("")
+  return Array.from(inputSet)
+}
+
+// Paese params and merge with defaults
 const defaults = {
   format: "romaji",
   minShared: 2,
@@ -15,6 +28,7 @@ const hash2Obj = location.hash.substring(1)
     {}
   )
 
+// Interpret params
 let oldParams = {...defaults, ...hash2Obj}
 let oldUserHistory = []
 try {
@@ -26,7 +40,9 @@ try {
   console.log("Unable to access localStorage")
 }
 
+// state tracking
 let lastUserList = []
+
 
 const app = new Vue({
   el: '#app',
@@ -76,7 +92,7 @@ const app = new Vue({
       return ret
     },
     usersInputList () {
-      return this.sanitizeInput(this.usersInput)
+      return sanitizeInput(this.usersInput)
     },
     /**
      * Order users in entries by user input.
@@ -164,17 +180,6 @@ const app = new Vue({
           }
           console.error("fetch error", json)
         })
-    },
-    /**
-     * Split a string by comma and remove duplicates.
-     * @param  {String} inputString The string to split.
-     * @return {Array}              Disjoined elements of the string.
-     */
-    sanitizeInput (inputString) {
-      const inputArray = inputString.split(",").map(x => x.trim())
-      const inputSet = new Set(inputArray)
-      inputSet.delete("")
-      return Array.from(inputSet)
     },
     /**
      * Update userHistory in localStorage.
@@ -278,6 +283,7 @@ const app = new Vue({
   },
 })
 
+// Post-init
 $('.ui.radio.checkbox')
   .checkbox()
 $('#user-dropdown')
@@ -286,4 +292,4 @@ $('#user-dropdown')
     clearable: true,
     sortSelect: true,
   })
-app.setDropdownItems(app.sanitizeInput(oldParams.users))
+app.setDropdownItems(sanitizeInput(oldParams.users))
