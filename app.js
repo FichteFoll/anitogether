@@ -54,8 +54,10 @@ const app = new Vue({
     usersInput: "",  // set this later
     userHistory: oldUserHistory,
     titleFormat: oldParams.format,
-    disabled: true,
     minShared: oldParams.minShared,
+    booleans: { // Vue can't track raw booleans it seems?
+      disabled: true,
+    },
   },
   computed: {
     entries () {
@@ -209,10 +211,9 @@ const app = new Vue({
      * @param {Array} items Items to set (user names).
      */
     setDropdownItems (items) {
-      app.disabled = true
+      this.booleans.disabled = true
       $('.dropdown').dropdown('set selected', items)
-      app.disabled = false // dunno why this doesn't trigger fetchLists
-      app.fetchLists()
+      this.booleans.disabled = false
     },
     /**
      * Update location hash parameters.
