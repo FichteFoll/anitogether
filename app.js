@@ -118,10 +118,12 @@ const app = new Vue({
      * @return {Object}
      */
     stats () {
+      const visibleEntries = this.entries.filter(({media}) => media.visible)
       return {
-        count: this.entries.length,
-        countReleasing: this.entries
+        count: visibleEntries.length,
+        countReleasing: visibleEntries
           .filter(({media}) => media.status === 'RELEASING').length,
+        hidden: this.entries.length - visibleEntries.length,
       }
     },
   },

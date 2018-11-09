@@ -222,8 +222,9 @@
                ? "Hide shows"
                : "Select shows" }}
           </button>
-          {{ stats.count }} {{ (orderedUsers.length > 1) ? "shared" : "" }} anime,
-          {{ stats.countReleasing }} releasing
+          {{ stats.count }} {{ (orderedUsers.length > 1) ? "shared" : "" }} anime
+          {{ stats.countReleasing > 0 ? `, ${stats.countReleasing} releasing` : "" }}
+          {{ stats.hidden > 0 ? `, ${stats.hidden} hidden` : "" }}
         </th>
       </tfoot>
       <!-- TODO footer with buttons to show/hide selected shows -->
