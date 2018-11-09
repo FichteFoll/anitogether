@@ -18,6 +18,7 @@ const defaults = {
   format: "romaji",
   minShared: 2,
   users: "",
+  hide: "",
 }
 
 const hash2Obj = location.hash.substring(1)
@@ -55,8 +56,10 @@ const app = new Vue({
     userHistory: oldUserHistory,
     titleFormat: oldParams.format,
     minShared: oldParams.minShared,
+    hiddenEntries: sanitizeInput(oldParams.hide).map(Number),
     booleans: { // Vue can't track raw booleans it seems?
       disabled: true,
+      hideSelectActive: false,
     },
   },
   computed: {
@@ -82,6 +85,7 @@ const app = new Vue({
         if (this.usersInputList.length > 1 && entry.users.size < this.minShared) {
           dstEntries.delete(key)
         }
+        entry.media.visible = this.hiddenEntries.indexOf(entry.media.id) === -1
       }
 
       for (const entry of dstEntries.values()) {
@@ -140,6 +144,7 @@ const app = new Vue({
     minShared () { this.updateLocation() },
     usersInputList () { this.updateLocation() },
     titleFormat () { this.updateLocation() },
+    hiddenEntries () { this.updateLocation() },
   },
   methods: {
     fetchLists () {
@@ -198,6 +203,21 @@ const app = new Vue({
     clearUserHistory () {
       this.userHistory = []
     },
+    toggleHiddenEntries () {
+      this.booleans.hideSelectActive = !this.booleans.hideSelectActive
+      console.log("toggling", this.booleans.hideSelectActive)
+      // $('.select-shows:not(.selected)').transition('fade left')
+
+      if (!this.booleans.hideSelectActive) {
+        this.hiddenEntries = this.entries
+          .filter(({media}) => !media.visible)
+          .map(({media}) => media.id)
+      }
+    },
+    toggleEntry (id) {
+      console.log(id)
+      console.log(this.visibleEntries)
+    },
     getMediaTitle (media) {
       // english and native may be null, so always fall back to romaji
       return media.title[this.titleFormat] || media.title.romaji
@@ -223,6 +243,7 @@ const app = new Vue({
         users: this.usersInputList.join(","),
         format: this.titleFormat,
         minShared: this.minShared,
+        hide: this.hiddenEntries.join(","),
       }
       const changeFor = new Set(["users"])
 
