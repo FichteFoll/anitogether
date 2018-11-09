@@ -54,6 +54,7 @@
 </head>
 
 <body onhashchange="app.fetchLists()">
+
   <div id="app" class="center aligned">
   <div id="container" class="center aligned">
     <div id="input-container">
@@ -84,9 +85,6 @@
       </div>
 
       <div class="ui sub header">Settings</div>
-      <div class="ui accordion">
-        <div class="title"></div>
-      </div>
       <div class="ui form">
         <div class="fields">
           <div class="field inline fields">
@@ -120,6 +118,9 @@
 
     <div class="ui dividing header"></div>
     <!-- <hr> -->
+
+    <div id="messages"></div>
+
     <table id="table" class="ui table celled definition compact unstackable selectable">
       <thead>
         <tr>

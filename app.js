@@ -139,9 +139,8 @@ const app = new Vue({
               []
             )
             if (entries.length === 0) {
-              // TODO warn visibly
-              console.warn(`List for ${user.name} is empty!`)
-              return
+              this.showMessage("warning", "", `${user.name}'s list is empty`)
+              continue
             }
             Vue.set(this.sourceEntries, user.name, entries)
             Vue.set(this.users, user.name, user)
@@ -225,6 +224,32 @@ const app = new Vue({
       }
 
       oldParams = params
+    },
+    /**
+     * Rener a message in the html.
+     * @param  {String} kind  One of "error", "warning", "info", "positive".
+     * @param  {[type]} title (optional)
+     * @param  {[type]} text  (optional)
+     */
+    showMessage (kind, title, text) {
+      const msgContainer = document.getElementById("messages")
+      const cls = kind === 'error' ? 'negative' : kind
+      const html = `
+        <div class="ui message ${cls} hidden">
+          <i class="close icon"></i>
+          <div class="header">${title || ""}</div>
+          ${text || ""}
+        </div>
+      `
+      // Cannot check with innerHTML because jQuery modifies it
+      if (msgContainer.innerText.includes(text.trim())) {
+        // TODO find this message and add parens with number
+      } else {
+        msgContainer.insertAdjacentHTML('beforeend', html)
+        const $msg = $("#messages .message:last-child")
+        $msg.find('.close').on('click', () => $msg.transition('fade'))
+        $msg.transition('fade')
+      }
     },
   },
 })
