@@ -139,7 +139,8 @@
         <tr v-for="entry of entries">
           <th class="title"
               v-bind:class="{positive: entry.media.status === 'RELEASING',
-                             finished: entry.media.status === 'FINISHED'}">
+                             finished: entry.media.status === 'FINISHED'}"
+              v-bind:title="entry.media.status === 'RELEASING' ? 'Releasing' : ''">
             <a v-bind:href="`https://anilist.co/anime/${entry.media.id}`" target="_blank">
               {{ getMediaTitle(entry.media) }}
             </a>
