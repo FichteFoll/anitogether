@@ -72,7 +72,7 @@ const app = new Vue({
       }
 
       const ret = Array.from(dstEntries.values())
-      ret.sort((a, b) => a.media.title.userPreferred.localeCompare(b.media.title.userPreferred))
+      ret.sort((a, b) => this.getMediaTitle(a.media).localeCompare(this.getMediaTitle(b.media), "ja"))
       return ret
     },
     usersInputList () {
