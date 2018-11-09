@@ -91,6 +91,17 @@ const app = new Vue({
       }
       return orderedUsers
     },
+    /**
+     * Statistics to be rendered in footer.
+     * @return {Object}
+     */
+    stats () {
+      return {
+        count: this.entries.length,
+        countReleasing: this.entries
+          .filter(({media}) => media.status === 'RELEASING').length,
+      }
+    },
   },
   created () {
     this.fetchLists()

@@ -109,7 +109,7 @@
             </div>
           </div>
           <div class="field fields ui input inline">
-            <label>Minimum number of shared Anime</label>
+            <label>Minimum users for shared anime</label>
             <input type="number" name="minShared" v-model="minShared" class="one wide">
           </div>
         </div>
@@ -161,6 +161,12 @@
           </td>
         </tr>
       </tbody>
+      <tfoot>
+        <th v-bind:colspan="2 + orderedUsers.length">
+          {{ stats.count }} {{ (orderedUsers.length > 1) ? "shared" : "" }} anime,
+          {{ stats.countReleasing }} releasing
+        </th>
+      </tfoot>
       <!-- TODO footer with buttons to show/hide selected shows -->
     </table>
   </div>
