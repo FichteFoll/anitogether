@@ -235,6 +235,22 @@ const app = new Vue({
      */
     showMessage (kind, text, title) {
       const msgContainer = document.getElementById("messages")
+
+      // Check for existing message with same text and append a counter
+      for (const {lastChild: textNode} of msgContainer.querySelectorAll(".message.visible")) {
+        let oldText = textNode.textContent
+        if (oldText.includes(text.trim())) {
+          let num = 2
+          const match = /\((\d+)\)/.exec(textNode.textContent)
+          if (match) {
+            oldText = oldText.substring(0, match.index)
+            num = Number(match[1]) + 1
+          }
+          textNode.textContent = `${oldText} (${num})`
+          return
+        }
+      }
+
       const cls = kind === 'error' ? 'negative' : kind
       const html = `
         <div class="ui message ${cls} hidden">
@@ -243,15 +259,10 @@ const app = new Vue({
           ${text || ""}
         </div>
       `
-      // Cannot check with innerHTML because jQuery modifies it
-      if (msgContainer.innerText.includes(text.trim())) {
-        // TODO find this message and add parens with number in title?
-      } else {
-        msgContainer.insertAdjacentHTML('beforeend', html)
-        const $msg = $("#messages .message:last-child")
-        $msg.find('.close').on('click', () => $msg.transition('fade'))
-        $msg.transition('fade')
-      }
+      msgContainer.insertAdjacentHTML('beforeend', html)
+      const $msg = $("#messages .message:last-child")
+      $msg.find('.close').on('click', () => $msg.transition('fade'))
+      $msg.transition('fade')
     },
   },
 })
