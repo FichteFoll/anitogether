@@ -19,6 +19,7 @@
   <script src="./app.js" defer></script>
 
   <style type="text/css">
+    /*** Spacing ***/
     #app {
       margin: 2em;
     }
@@ -28,6 +29,11 @@
       margin: auto;
     }
 
+    footer {
+      text-align: right;
+    }
+
+    /*** Misc formatting ***/
     th.title.positive a {
       color: hsl(93, 72%, 25%);
     }
@@ -38,6 +44,7 @@
       border-radius: 4px;
     }
 
+    /*** Sticky table head ***/
     /* Must be on th because of chrome (and edge) bug
      * https://caniuse.com/#feat=css-sticky
      */
@@ -51,7 +58,7 @@
       background: white;
     }
 
-    /* Hiding and showing entries */
+    /*** Hiding and showing entries ***/
     #table .select-shows, #table .select-shows *,
     #table .hide-entry > * {
       transition: 0.5s;
@@ -101,7 +108,6 @@
               class="item"
               v-bind:data-value="name">
             {{ name }}
-            <!-- TODO allow removing entries -->
           </div>
           <div class="divider"></div>
           <div class="header">
@@ -230,6 +236,13 @@
       </tfoot>
       <!-- TODO footer with buttons to show/hide selected shows -->
     </table>
+
+    <footer>
+      Made by <a href="https://github.com/FichteFoll" target="_blank">FichteFoll</a>;
+      Open Source @ <a href="https://github.com/FichteFoll/anitogether" target="_blank">
+        <i class="icon github"></i> GitHub
+      </a>
+    </footer>
   </div>
   </div>
 
