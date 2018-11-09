@@ -241,7 +241,7 @@ const app = new Vue({
         let oldText = textNode.textContent
         if (oldText.includes(text.trim())) {
           let num = 2
-          const match = /\((\d+)\)/.exec(textNode.textContent)
+          const match = /\((\d+)\)$/.exec(textNode.textContent)
           if (match) {
             oldText = oldText.substring(0, match.index)
             num = Number(match[1]) + 1
