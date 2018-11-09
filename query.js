@@ -2,9 +2,11 @@
 'use strict'
 
 function buildQuery (userNames) {
-  let query = `query WatchingProgress($status: [MediaListStatus]) {`
+  let query = `query WatchingProgress($status: [MediaListStatus]) {\n`
+  const tmplOffset = 2
+  let tmplLen = 0
   for (const [i, userName] of userNames.entries()) {
-    query += `
+    const tmpl = `\
       user${i}: MediaListCollection(status_in: $status, userName: "${userName}", type: ANIME) {
         user {
           id
@@ -36,10 +38,12 @@ function buildQuery (userNames) {
             progress
           }
         }
-      }`
+      }\n`
+    if (tmplLen === 0) tmplLen = tmpl.split("\n").length - 1
+    query += tmpl
   }
-  query += "\n}"
-  return query
+  query += "}"
+  return {query, tmplOffset, tmplLen}
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -48,6 +52,7 @@ function getMediaLists (userNames, status) {
   const variables = {
     status,
   }
+  const {query, tmplOffset, tmplLen} = buildQuery(userNames)
   const options = {
     method: 'POST',
     headers: {
@@ -56,11 +61,24 @@ function getMediaLists (userNames, status) {
       // 'Origin': 'https://anilist.co',
     },
     body: JSON.stringify({
-      query: buildQuery(userNames),
+      query,
       variables,
     }),
   }
 
   return fetch(url, options)
     .then(response => response.json().then(json => response.ok ? json : Promise.reject(json)))
+    .catch((json) => {
+      // Attempt to determine user that wasn't found
+      // and replace message.
+      for (const error of json.errors) {
+        const {message, locations} = error
+        if (message === "User not found") {
+          const [{line}] = locations
+          const userIndex = (line - tmplOffset) / tmplLen
+          error.message = `User ${userNames[Math.floor(userIndex)]} not found`
+        }
+      }
+      return Promise.reject(json)
+    })
 }
