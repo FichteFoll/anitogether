@@ -1,16 +1,19 @@
+/* global Vue:false, $:false, getMediaLists:false */
+'use strict'
+
 const defaults = {
   format: "romaji",
   minShared: 2,
-  users: ""
+  users: "",
 }
 
 const hash2Obj = location.hash.substring(1)
-      .split("&")
-      .map(v => v.split("="))
-      .reduce(
-        (pre, [key, value]) => ({ ...pre, [key]: decodeURIComponent(value) }),
-        {}
-      )
+  .split("&")
+  .map(v => v.split("="))
+  .reduce(
+    (pre, [key, value]) => ({ ...pre, [key]: decodeURIComponent(value) }),
+    {}
+  )
 
 let oldParams = {...defaults, ...hash2Obj}
 let oldUserHistory = []
@@ -19,7 +22,9 @@ try {
   if (storageHistory !== "") {
     oldUserHistory = storageHistory.split(',')
   }
-} catch (e) {}
+} catch (e) {
+  console.log("Unable to access localStorage")
+}
 
 let lastUserList = []
 
@@ -38,17 +43,17 @@ const app = new Vue({
   },
   computed: {
     entries () {
-      let dstEntries = new Map()
+      const dstEntries = new Map()
       for (const [userName, srcEntries] of Object.entries(this.sourceEntries)) {
         for (const {media, ...rest} of srcEntries) {
           if (!dstEntries.has(media.id)) {
             if (!media.latestEpisode) {
-              media.latestEpisode =
-                (media.nextAiringEpisode && media.nextAiringEpisode.episode > 0)
-                ? media.nextAiringEpisode.episode - 1
-                : (media.episodes || "?")
+              media.latestEpisode
+                = media.nextAiringEpisode && media.nextAiringEpisode.episode > 0
+                  ? media.nextAiringEpisode.episode - 1
+                  : media.episodes || "?"
             }
-            dstEntries.set(media.id, {media: media, users: new Map()})
+            dstEntries.set(media.id, {media, users: new Map()})
           }
           dstEntries.get(media.id).users.set(userName, rest)
         }
@@ -61,15 +66,13 @@ const app = new Vue({
         }
       }
 
-      for (let entry of dstEntries.values()) {
+      for (const entry of dstEntries.values()) {
         const mUsers = Array.from(entry.users.values())
         entry.maxEpisode = Math.max(...mUsers.map(e => e.progress))
       }
 
-      let ret = Array.from(dstEntries.values())
-      ret.sort((a, b) => {
-        return a.media.title.userPreferred.localeCompare(b.media.title.userPreferred)
-      })
+      const ret = Array.from(dstEntries.values())
+      ret.sort((a, b) => a.media.title.userPreferred.localeCompare(b.media.title.userPreferred))
       return ret
     },
     usersInputList () {
@@ -80,9 +83,9 @@ const app = new Vue({
      * @return {Array[Object]} Sorted user objects.
      */
     orderedUsers () {
-      let orderedUsers = []
+      const orderedUsers = []
       for (const name of this.usersInputList) {
-        if (!!this.users[name]) {
+        if (this.users[name]) {
           orderedUsers.push(this.users[name])
         }
       }
@@ -99,7 +102,9 @@ const app = new Vue({
         // before we ask the dropdown to refresh the selected items.
         try {
           localStorage.setItem('userHistory', this.userHistory.join(','))
-        } catch (e) {}
+        } catch (e) {
+          console.log("Unable to set localStorage")
+        }
         app.setDropdownItems(this.usersInputList)
       })
     },
@@ -109,10 +114,10 @@ const app = new Vue({
   },
   methods: {
     fetchLists () {
-      if (this.disabled) return;
+      if (this.disabled) return
       const userNames = this.usersInputList
-      if (userNames.length === 0) return;
-      if (userNames.toString() === lastUserList.toString()) return;
+      if (userNames.length === 0) return
+      if (userNames.toString() === lastUserList.toString()) return
       lastUserList = userNames
 
       console.log("fetching for", userNames)
@@ -122,7 +127,7 @@ const app = new Vue({
 
       // TODO add and remove loading icon
       getMediaLists(userNames, "CURRENT")
-        .then(json => {
+        .then((json) => {
           console.log("results for users", userNames, json)
           this.sourceEntries = {}
           this.users = {}
@@ -142,7 +147,7 @@ const app = new Vue({
             Vue.set(this.users, user.name, user)
           }
         })
-        .catch(error => {
+        .catch((error) => {
           // TODO display errors
           alert('Error, check console')
           console.error(error)
@@ -155,7 +160,7 @@ const app = new Vue({
      */
     sanitizeInput (inputString) {
       const inputArray = inputString.split(",").map(x => x.trim())
-      let inputSet = new Set(inputArray)
+      const inputSet = new Set(inputArray)
       inputSet.delete("")
       return Array.from(inputSet)
     },
@@ -165,10 +170,8 @@ const app = new Vue({
      */
     updateUserHistory (userNames) {
       const userSet = new Set([...this.userHistory, ...userNames])
-      let userArray = Array.from(userSet)
-      userArray.sort((a, b) => {
-        return a.localeCompare(b)
-      })
+      const userArray = Array.from(userSet)
+      userArray.sort((a, b) => a.localeCompare(b))
       if (this.userHistory.toString() !== userArray.toString()) {
         this.userHistory = userArray
       }
@@ -190,7 +193,7 @@ const app = new Vue({
      */
     setDropdownItems (items) {
       app.disabled = true
-      $('.dropdown').dropdown('set selected', items);
+      $('.dropdown').dropdown('set selected', items)
       app.disabled = false // dunno why this doesn't trigger fetchLists
       app.fetchLists()
     },
@@ -205,7 +208,7 @@ const app = new Vue({
       }
       const changeFor = new Set(["users"])
 
-      let hash = "#" + Object.entries(params)
+      const hash = "#" + Object.entries(params)
         .filter(([k, v]) => v != defaults[k])
         .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
         .join('&')
@@ -215,10 +218,11 @@ const app = new Vue({
         .filter(([k, v]) => v != oldParams[k])
         .every(([k]) => changeFor.has(k))
 
-      if (shouldChange)
+      if (shouldChange) {
         location.assign(newUrl)
-      else
+      } else {
         location.replace(newUrl)
+      }
 
       oldParams = params
     },

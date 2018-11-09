@@ -1,0 +1,81 @@
+root: true
+env:
+  browser: true
+  es6: true
+extends: eslint:recommended
+parserOptions:
+  ecmaVersion: 2018
+  # sourceType: module
+rules:
+  # no-confusing-arrow: [error, {allowParens: true}]
+  arrow-body-style: warn
+  arrow-parens: [warn, as-needed, {requireForBlockBody: true}]
+  arrow-spacing: warn
+  block-scoped-var: error
+  comma-dangle: [warn, always-multiline]
+  consistent-return: warn
+  dot-location: [warn, property]
+  dot-notation: warn
+  eol-last: warn
+  implicit-arrow-linebreak: [warn]
+  indent: [error, 2]
+  init-declarations: warn
+  key-spacing: [warn, {mode: minimum}]
+  linebreak-style: [error, unix]
+  new-cap: error
+  newline-per-chained-call: warn
+  no-alert: warn
+  no-array-constructor: error
+  no-caller: warn
+  no-console: [off]
+  no-duplicate-imports: warn
+  no-eq-null: error
+  no-eval: warn
+  no-extend-native: warn
+  no-extra-parens: warn
+  no-implied-eval: warn
+  no-label-var: error
+  no-loop-func: warn
+  no-new-object: error
+  no-new: warn
+  no-restricted-syntax: [error, WithStatement, "BinaryExpression[operator='in']"]
+  no-sequences: error
+  no-shadow-restricted-names: error
+  no-shadow: warn
+  no-tabs: error
+  no-unmodified-loop-condition: warn
+  no-unneeded-ternary: warn
+  no-unused-expressions: warn
+  no-use-before-define: error
+  no-useless-call: error
+  no-useless-computed-key: warn
+  no-useless-concat: warn
+  no-useless-constructor: error
+  no-useless-rename: [warn]
+  no-var: error
+  no-void: error
+  no-with: error
+  nonblock-statement-body-position: error
+  object-shorthand: warn
+  one-var: [warn, never]
+  operator-assignment: warn
+  operator-linebreak: [warn, before]
+  padded-blocks: [warn, {blocks: never, classes: always, switches: never}]
+  prefer-arrow-callback: warn
+  prefer-const: [error, {destructuring: all}]
+  prefer-destructuring: [warn, {array: false}, {enforceForRenamedProperties: false}]
+  prefer-numeric-literals: warn
+  prefer-object-spread: warn
+  prefer-rest-params: error
+  prefer-spread: warn
+  quote-props: [warn, consistent-as-needed]
+  rest-spread-spacing: warn
+  semi: [error, never]
+  space-before-function-paren: [warn, always]
+  space-infix-ops: warn
+  space-unary-ops: warn
+  spaced-comment: warn
+  strict: [error, global]
+  switch-colon-spacing: warn
+  template-curly-spacing: warn
+  unicode-bom: error

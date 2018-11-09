@@ -1,0 +1,23 @@
+{
+  "name": "anitogether",
+  "version": "0.2.0",
+  "description": "Webapp providing an overview of AniList entries",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FichteFoll/anitogether.git"
+  },
+  "keywords": [
+    "anilist",
+    "static-website",
+    "webapp"
+  ],
+  "author": "FichteFoll",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FichteFoll/anitogether/issues"
+  },
+  "homepage": "https://github.com/FichteFoll/anitogether#readme",
+  "devDependencies": {
+    "eslint": "^5.8.0"
+  }
+}

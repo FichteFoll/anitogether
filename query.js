@@ -1,5 +1,8 @@
-function buildQuery(userNames) {
-  var query = `query WatchingProgress($status: [MediaListStatus]) {`
+/* global getMediaLists */
+'use strict'
+
+function buildQuery (userNames) {
+  let query = `query WatchingProgress($status: [MediaListStatus]) {`
   for (const [i, userName] of userNames.entries()) {
     query += `
       user${i}: MediaListCollection(status_in: $status, userName: "${userName}", type: ANIME) {
@@ -39,27 +42,25 @@ function buildQuery(userNames) {
   return query
 }
 
-function getMediaLists(userNames, status) {
-  var variables = {
-    status: status,
+// eslint-disable-next-line no-unused-vars
+function getMediaLists (userNames, status) {
+  const url = 'https://graphql.anilist.co'
+  const variables = {
+    status,
+  }
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      // 'Origin': 'https://anilist.co',
+    },
+    body: JSON.stringify({
+      query: buildQuery(userNames),
+      variables,
+    }),
   }
 
-  var url = 'https://graphql.anilist.co',
-    options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        // 'Origin': 'https://anilist.co',
-      },
-      body: JSON.stringify({
-        query: buildQuery(userNames),
-        variables: variables,
-      })
-    }
-
-  return (fetch(url, options)
-    .then(response => {
-      return response.json().then(json => response.ok ? json : Promise.reject(json))
-    }))
+  return fetch(url, options)
+    .then(response => response.json().then(json => response.ok ? json : Promise.reject(json)))
 }
