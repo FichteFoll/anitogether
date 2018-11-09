@@ -25,6 +25,7 @@ Thanks to [AniList][] and its very usable API.
 - Highlight users that are behind compared to the "leader"
   (with the most episodes watched)
 - Save a list of previously entered user names for quick access
+- Hide shows you don't care about
 
 ![Screenshot](./screenshot.png)
 
@@ -32,7 +33,7 @@ Thanks to [AniList][] and its very usable API.
 
 - [Vue.js](https://vuejs.org/)
 - [Semantic UI](https://semantic-ui.com/)
-- [ECMAScript 6](http://es6-features.org/)
+- ECMAScript 2018
 - No build steps required; everything is static!
 
 Incompatible with Internet Explorer (and maybe Edge?).
@@ -43,11 +44,11 @@ Use a recent and modern browser.
 
 Roughly ordered by priority:
 
+- dark mode
 - cache per-user results so changing the order or adding/removing
   doesn't request data for ALL users again
-- allow hiding and unhiding anime (and preserve in url, prolly by id)
 - allow removing individual entries from history
 - option to include PAUSED anime and highlight this in the table
+- something for PLANNED shows
 - explore more visual approach where columns are the episode number
   and the user's avatar is inserted in the cells; needs smart collapsing
-- something for PLANNED shows
