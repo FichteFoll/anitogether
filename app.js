@@ -125,7 +125,8 @@ const app = new Vue({
       // https://stackoverflow.com/questions/36612847/how-can-i-bind-the-html-title-content-in-vuejs
       this.updateUserHistory(userNames)
 
-      // TODO add and remove loading icon
+      // Could show a loading icon here,
+      // but responses are so fast it doesn't matter.
       getMediaLists(userNames, "CURRENT")
         .then((json) => {
           console.log("results for users", userNames, json)
@@ -139,17 +140,18 @@ const app = new Vue({
               []
             )
             if (entries.length === 0) {
-              this.showMessage("warning", "", `${user.name}'s list is empty`)
+              this.showMessage("warning", `${user.name}'s list is empty`)
               continue
             }
             Vue.set(this.sourceEntries, user.name, entries)
             Vue.set(this.users, user.name, user)
           }
         })
-        .catch((error) => {
-          // TODO display errors
-          alert('Error, check console')
-          console.error(error)
+        .catch((json) => {
+          for (const {message} of json.errors) {
+            this.showMessage("error", message)
+          }
+          console.error("fetch error", json)
         })
     },
     /**
@@ -228,10 +230,10 @@ const app = new Vue({
     /**
      * Rener a message in the html.
      * @param  {String} kind  One of "error", "warning", "info", "positive".
-     * @param  {[type]} title (optional)
      * @param  {[type]} text  (optional)
+     * @param  {[type]} title (optional)
      */
-    showMessage (kind, title, text) {
+    showMessage (kind, text, title) {
       const msgContainer = document.getElementById("messages")
       const cls = kind === 'error' ? 'negative' : kind
       const html = `
@@ -243,7 +245,7 @@ const app = new Vue({
       `
       // Cannot check with innerHTML because jQuery modifies it
       if (msgContainer.innerText.includes(text.trim())) {
-        // TODO find this message and add parens with number
+        // TODO find this message and add parens with number in title?
       } else {
         msgContainer.insertAdjacentHTML('beforeend', html)
         const $msg = $("#messages .message:last-child")
