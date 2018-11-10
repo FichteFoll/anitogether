@@ -314,7 +314,7 @@ export default {
   },
   methods: {
     fetchLists () {
-      if (this.disabled) return
+      if (this.booleans.disabled) return
       const userNames = this.usersInputList
       if (userNames.length === 0) return
       if (userNames.toString() === lastUserList.toString()) return
@@ -400,6 +400,7 @@ export default {
       this.booleans.disabled = true
       $('.dropdown').dropdown('set selected', items)
       this.booleans.disabled = false
+      this.fetchLists()
     },
     /**
      * Update location hash parameters.
