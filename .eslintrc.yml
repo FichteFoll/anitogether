@@ -5,7 +5,7 @@ env:
 extends: eslint:recommended
 parserOptions:
   ecmaVersion: 2018
-  # sourceType: module
+  sourceType: module
 rules:
   # no-confusing-arrow: [error, {allowParens: true}]
   arrow-body-style: warn

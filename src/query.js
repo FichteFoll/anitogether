@@ -1,6 +1,3 @@
-/* global getMediaLists */
-'use strict'
-
 function buildQuery (userNames) {
   let query = `query WatchingProgress($status: [MediaListStatus]) {\n`
   const tmplOffset = 2
@@ -46,8 +43,7 @@ function buildQuery (userNames) {
   return {query, tmplOffset, tmplLen}
 }
 
-// eslint-disable-next-line no-unused-vars
-function getMediaLists (userNames, status) {
+export function getMediaLists (userNames, status) {
   const url = 'https://graphql.anilist.co'
   const variables = {
     status,

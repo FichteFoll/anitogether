@@ -2,22 +2,30 @@
   "name": "anitogether",
   "version": "0.2.0",
   "description": "Webapp providing an overview of AniList entries",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FichteFoll/anitogether.git"
   },
-  "keywords": [
-    "anilist",
-    "static-website",
-    "webapp"
-  ],
   "author": "FichteFoll",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/FichteFoll/anitogether/issues"
   },
   "homepage": "https://github.com/FichteFoll/anitogether#readme",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "vue": "^2.5.17"
+  },
   "devDependencies": {
-    "eslint": "^5.8.0"
+    "@vue/cli-plugin-eslint": "^3.0.5",
+    "@vue/cli-service": "^3.0.5",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0-0",
+    "vue-template-compiler": "^2.5.17"
   }
 }
