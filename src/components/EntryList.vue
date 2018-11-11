@@ -22,7 +22,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="entry of entries"
+      <tr v-for="entry of filteredEntries"
           class="entry"
           v-bind:class="{ 'hide-entry': !entry.media.visible }">
         <th class="title"
@@ -76,7 +76,6 @@
         {{ stats.belowThreshold > 0 ? `, ${stats.belowThreshold} below threshold` : "" }}
       </th>
     </tfoot>
-    <!-- TODO footer with buttons to show/hide selected shows -->
   </table>
 </template>
 
@@ -86,6 +85,7 @@ export default {
   props: {
     entries: Array,
     users: Array,
+    minShared: String,
   },
   data () {
     return {
@@ -114,7 +114,7 @@ export default {
     filteredEntries () {
       const dstEntries = []
       for (const entry of this.entries) {
-        if (this.users.length === 1 || entry.users.size >= this.minShared) {
+        if (this.users.length === 1 || entry.users.size >= Number(this.minShared)) {
           dstEntries.push(entry)
         }
       }
@@ -133,7 +133,7 @@ export default {
           .map(({media}) => media.id)
       }
     },
-  }
+  },
 }
 </script>
 

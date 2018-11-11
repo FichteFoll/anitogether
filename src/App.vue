@@ -45,7 +45,7 @@
 
       <Messages :messages="messages" @dismiss="dismissMessage" />
 
-      <EntryList :entries="entries" :users="orderedUsers" />
+      <EntryList :entries="entries" :users="orderedUsers" :minShared="minShared" />
 
       <footer>
         Made by <a href="https://github.com/FichteFoll" target="_blank">FichteFoll</a>;
