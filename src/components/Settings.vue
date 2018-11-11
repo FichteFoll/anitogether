@@ -1,7 +1,7 @@
 <template>
   <sui-form-fields>
     <sui-form-field>
-      <label>Title Format</label>
+      <label>Title format</label>
       <sui-form-fields inline>
         <sui-form-field v-for="format of formats" :key="format.value">
           <sui-checkbox
