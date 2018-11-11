@@ -1,82 +1,92 @@
 <template>
   <!-- Need to wrap all table cells I intend to animate in a div
     because you cannot override table row or cell sizes. -->
-  <table id="table"
-      class="ui table celled definition compact unstackable selectable"
-      v-bind:class="{ editing: hideSelectActive }">
-    <thead>
-      <tr>
-        <th>Anime</th>
-        <th v-for="user of users"
-            class="right aligned collapsing">
+  <sui-table
+    class="entry-table"
+    definition celled compact unstackable selectable
+    :class="{ editing: hideSelectActive }"
+  >
+    <sui-table-header>
+      <sui-table-row>
+        <sui-table-header-cell>Anime</sui-table-header-cell>
+        <sui-table-header-cell v-for="user of users" collapsing textAlign="right">
           <a v-bind:href="`https://anilist.co/user/${user.name}`" target="_blank">
-            <img class="avatar"
-                v-bind:src="user.avatar.medium"
-                v-bind:title="user.name">
+            <sui-image
+              rounded size="mini"
+              :src="user.avatar.medium"
+              :title="user.name"
+            />
           </a>
-        </th>
-        <th class="right aligned collapsing">Latest</th>
-        <th class="collapsing select-shows">
+        </sui-table-header-cell>
+        <sui-table-header-cell collapsing textAlign="right">
+          Latest
+        </sui-table-header-cell>
+        <sui-table-header-cell class="collapsing select-shows">
           <div class="animate">Show <br> / Hide</div>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="entry of filteredEntries"
-          class="entry"
-          v-bind:class="{ 'hide-entry': !entry.media.visible }">
-        <th class="title"
-            v-bind:class="{positive: entry.media.status === 'RELEASING',
-                           finished: entry.media.status === 'FINISHED'}"
-            v-bind:title="entry.media.status === 'RELEASING' ? 'Releasing' : ''">
+        </sui-table-header-cell>
+      </sui-table-row>
+    </sui-table-header>
+
+    <sui-table-body>
+      <sui-table-row v-for="entry of filteredEntries"
+        :key="entry.media.id"
+        class="entry"
+        v-bind:class="{ 'hide-entry': !entry.media.visible }"
+      >
+        <sui-table-header-cell class="title"
+          :positive="entry.media.status === 'RELEASING'"
+          :class="{ finished: entry.media.status === 'FINISHED' }"
+          :title="entry.media.status === 'RELEASING' ? 'Releasing' : ''"
+        >
           <div class="animate">
             <a v-bind:href="`https://anilist.co/anime/${entry.media.id}`" target="_blank">
               {{ entry.media.title.userPreferred }}
             </a>
           </div>
-        </th>
-        <td v-for="user of users"
-            v-if="entry.users.has(user.name)"
-            class="episode progress right aligned collapsing"
-            v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
-                           negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
-            v-bind:title="entry.users.get(user.name).score + ' / 10'">
+        </sui-table-header-cell>
+        <sui-table-cell v-for="user of users"
+          v-if="entry.users.has(user.name)"
+          class="episode progress right aligned collapsing"
+          v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
+                         negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
+          v-bind:title="entry.users.get(user.name).score + ' / 10'"
+        >
           <div class="animate">
             {{ entry.users.get(user.name).progress || "" }}
           </div>
-        </td>
-        <td v-else></td>
-        <td class="episode latest right aligned collapsing"
+        </sui-table-cell>
+        <sui-table-cell v-else></sui-table-cell>
+        <sui-table-cell class="episode latest right aligned collapsing"
             v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }">
           <div class="animate">
             {{ entry.media.latestEpisode }}
           </div>
-        </td>
-        <th class="collapsing select-shows">
-          <div class="ui fitted slider checkbox animate">
-            <input type="checkbox"
-                v-bind:value="entry.media.id" v-model="entry.media.visible">
-            <label></label>
-          </div>
-        </th>
-      </tr>
-    </tbody>
-    <tfoot class="full-width">
-      <th v-bind:colspan="3 + users.length">
-        <button class="ui button compact small right floated"
-            v-bind:class="{ primary: hideSelectActive }"
-            @click="toggleHiddenEntries">
+        </sui-table-cell>
+        <sui-table-header-cell class="collapsing select-shows">
+          <sui-checkbox toggle v-model="entry.media.visible" class="animate"/>
+        </sui-table-header-cell>
+      </sui-table-row>
+    </sui-table-body>
+
+    <sui-table-footer class="full-width">
+      <sui-table-header-cell v-bind:colspan="3 + users.length">
+        <sui-button compact size="small" floated="right"
+          :primary="hideSelectActive"
+          @click="toggleHiddenEntries"
+        >
           {{ hideSelectActive
              ? "Hide shows"
              : "Select shows" }}
-        </button>
-        {{ stats.count }} {{ (users.length > 1) ? "shared" : "" }} anime
-        {{ stats.countReleasing > 0 ? `, ${stats.countReleasing} releasing` : "" }}
-        {{ stats.hidden > 0 ? `, ${stats.hidden} hidden` : "" }}
-        {{ stats.belowThreshold > 0 ? `, ${stats.belowThreshold} below threshold` : "" }}
-      </th>
-    </tfoot>
-  </table>
+        </sui-button>
+        <span class="stats">
+          {{ stats.count }} {{ (users.length > 1) ? "shared" : "" }} anime
+          {{ stats.countReleasing > 0 ? `, ${stats.countReleasing} releasing` : "" }}
+          {{ stats.hidden > 0 ? `, ${stats.hidden} hidden` : "" }}
+          {{ stats.belowThreshold > 0 ? `, ${stats.belowThreshold} below threshold` : "" }}
+        </span>
+      </sui-table-header-cell>
+    </sui-table-footer>
+  </sui-table>
 </template>
 
 <script>
@@ -142,12 +152,6 @@ export default {
     color: hsl(93, 72%, 25%);
   }
 
-  th .avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 4px;
-  }
-
   /*** Sticky table head ***/
   /* Must be on th because of chrome (and edge) bug
    * https://caniuse.com/#feat=css-sticky
@@ -167,21 +171,21 @@ export default {
   .hide-entry > * {
     transition: 0.5s;
   }
-  #table:not(.editing) .select-shows {
+  .entry-table:not(.editing) .select-shows {
     padding-left: 0;
     padding-right: 0;
     border-width: 0;
   }
-  #table:not(.editing) .select-shows * { /* this selector is not optimal, but ┐(°ヮ°)┌ */
+  .entry-table:not(.editing) .select-shows * { /* this selector is not optimal, but ┐(°ヮ°)┌ */
     transform: scaleX(0);
     width: 0;
     /*padding: 0;*/
     font-size: 0;
     min-width: 0;
   }
-  /*#table:not(.editing) .hide-entry .animate {*/
-  #table:not(.editing) .hide-entry > *,
-  #table:not(.editing) .hide-entry .animate {
+  /*.entry-table:not(.editing) .hide-entry .animate {*/
+  .entry-table:not(.editing) .hide-entry > *,
+  .entry-table:not(.editing) .hide-entry .animate {
     /*transform: scaleY(0);*/
     height: 0;
     min-height: 0;
