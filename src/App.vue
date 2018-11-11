@@ -66,9 +66,9 @@ function sanitizeInput (inputString) {
 
 // Default parameters
 const defaults = {
+  users: "",
   format: "romaji",
   minShared: "2",
-  users: "",
   hide: "",
 }
 
@@ -230,14 +230,11 @@ export default {
       return media.title[this.titleFormat] || media.title.romaji
     },
     loadHash () {
-      console.log("loading hash")
       const updateIfChanged = (prop, value) => {
         // don't update props unnecessarily
         const oldValue = this[prop]
         if (JSON.stringify(oldValue) !== JSON.stringify(value)) {
           this[prop] = value
-          console.log("setting", prop, value)
-          // this.$set(this, prop, value)
           return true
         }
         return false
@@ -254,6 +251,7 @@ export default {
 
       // Set data
       if (!updateIfChanged('oldParams', params)) return // short-circuit
+      // TODO this causes updateLocation to be called 4 times on first load
       updateIfChanged('usersInput', sanitizeInput(params.users))
       updateIfChanged('titleFormat', params.format)
       updateIfChanged('minShared', params.minShared)
@@ -264,6 +262,8 @@ export default {
      */
     updateLocation () {
       const params = {
+        // Must keep same order as defaults, so we use rest spread
+        ...defaults,
         users: this.usersInput.join(","),
         format: this.titleFormat,
         minShared: this.minShared,
