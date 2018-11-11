@@ -1,15 +1,15 @@
 <template>
-  <div id="app" class="center aligned">
-    <div id="container" class="center aligned">
+  <div id="app">
+    <div id="container">
       <sui-form id="input-form">
-        <div class="ui sub header">Users</div>
+        <sui-header sub>Users</sui-header>
         <UsersInput
           v-model="usersInput"
           :userHistory="userHistory"
           @clearHistory="clearUserHistory"
         />
 
-        <div class="ui sub header">Settings</div>
+        <sui-header sub>Settings</sui-header>
         <Settings
           :titleFormat="titleFormat"
           @inputFormat="titleFormat = $event"
@@ -18,7 +18,7 @@
         />
       </sui-form>
 
-      <div class="ui dividing header"></div>
+      <sui-divider />
 
       <Messages
         :messages="messages"
@@ -34,8 +34,9 @@
 
       <footer>
         Made by <a href="https://github.com/FichteFoll" target="_blank">FichteFoll</a>;
-        Open Source @ <a href="https://github.com/FichteFoll/anitogether" target="_blank">
-          <i class="icon github"></i> GitHub
+        Open Source @
+        <a href="https://github.com/FichteFoll/anitogether" target="_blank">
+          <sui-icon name="github" /> GitHub
         </a>
       </footer>
     </div>

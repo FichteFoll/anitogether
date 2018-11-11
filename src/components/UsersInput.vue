@@ -35,8 +35,5 @@ export default {
       return this.userHistory.map(x => ({text: x, value: x}))
     },
   },
-  mounted () {
-    // this.setDropdownItems(sanitizeInput(this.value))
-  },
 }
 </script>

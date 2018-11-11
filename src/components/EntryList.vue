@@ -124,8 +124,6 @@ export default {
   methods: {
     toggleHiddenEntries () {
       this.hideSelectActive = !this.hideSelectActive
-      console.log("toggling", this.hideSelectActive)
-      // $('.select-shows:not(.selected)').transition('fade left')
 
       if (!this.hideSelectActive) {
         const hiddenEntries = this.entries
