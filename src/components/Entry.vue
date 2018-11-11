@@ -4,7 +4,6 @@
     >
       <sui-table-header-cell class="title"
         :positive="entry.media.status === 'RELEASING'"
-        :class="{ finished: entry.media.status === 'FINISHED' }"
         :title="entry.media.status === 'RELEASING' ? 'Releasing' : ''"
       >
         <transition name="title" mode="out-in">
@@ -18,6 +17,7 @@
           </div>
         </transition>
       </sui-table-header-cell>
+
       <sui-table-cell v-for="user of users"
         :key="user.name"
         v-if="entry.users.has(user.name)"
@@ -26,32 +26,25 @@
                        negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
         v-bind:title="entry.users.get(user.name).score + ' / 10'"
       >
-        <!-- <transition name="rowfade"> -->
-          <div class="animate">
-            {{ entry.users.get(user.name).progress || "" }}
-          </div>
-        <!-- </transition> -->
+        <div class="animate">
+          {{ entry.users.get(user.name).progress || "" }}
+        </div>
       </sui-table-cell>
       <sui-table-cell v-else></sui-table-cell>
-      <sui-table-cell class="episode latest right aligned collapsing"
-          v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }">
-        <!-- <transition name="rowfade"> -->
-          <div class="animate">
-            {{ entry.media.latestEpisode }}
-          </div>
-        <!-- </transition> -->
+
+      <sui-table-cell
+        class="episode latest right aligned collapsing"
+        v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }"
+      >
+        <div class="animate">
+          {{ entry.media.latestEpisode }}
+        </div>
       </sui-table-cell>
+
       <sui-table-header-cell class="collapsing select-shows">
         <div class="animate">
-        <!-- <transition name="rowfade"> -->
           <sui-checkbox toggle v-model="entry.media.visible" />
-          <!-- <div class="ui fitted checkbox">
-            <input readonly="readonly" tabindex="0" type="checkbox" class="hidden"
-              v-model="entry.media.visible">
-            <label></label>
-          </div> -->
         </div>
-        <!-- </transition> -->
       </sui-table-header-cell>
     </sui-table-row>
 </template>
@@ -104,7 +97,6 @@ export default {
   }
 
   .rowfade-enter .animate, .rowfade-leave-to .animate {
-    transform: scaleY(0);
     /*height: 0px;*/
     min-height: 0px;
     padding-top: 0;
