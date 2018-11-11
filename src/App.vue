@@ -61,7 +61,7 @@
 
       <div class="ui dividing header"></div>
 
-      <div id="messages"></div>
+      <Messages :messages="messages" @dismiss="dismissMessage" />
 
       <EntryList :entries="entries" :users="orderedUsers" />
 
@@ -77,8 +77,10 @@
 
 <script>
 import Vue from 'vue'
-import {getMediaLists} from './query.js'
 import EntryList from './components/EntryList.vue'
+import Messages from './components/Messages.vue'
+
+import {getMediaLists} from './query.js'
 
 /**
  * Split a string by comma and remove duplicates.
@@ -128,6 +130,7 @@ export default {
   name: 'app',
   components: {
     EntryList,
+    Messages,
   },
   data () {
     return {
@@ -143,6 +146,7 @@ export default {
       booleans: { // Vue can't track raw booleans it seems?
         disabled: true,
       },
+      messages: [],
     }
   },
   computed: {
