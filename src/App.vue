@@ -10,35 +10,12 @@
         />
 
         <div class="ui sub header">Settings</div>
-        <div class="ui form">
-          <div class="fields">
-            <div class="field inline fields">
-              <label for="format">Title Format:</label>
-              <div class="field">
-                <div class="ui radio checkbox">
-                  <input type="radio" name="format" value="romaji" v-model="titleFormat">
-                  <label>Romaji</label>
-                </div>
-              </div>
-              <div class="field">
-                <div class="ui radio checkbox">
-                  <input type="radio" name="format" value="english" v-model="titleFormat">
-                  <label>English</label>
-                </div>
-              </div>
-              <div class="field">
-                <div class="ui radio checkbox">
-                  <input type="radio" name="format" value="native" v-model="titleFormat">
-                  <label>Native</label>
-                </div>
-              </div>
-            </div>
-            <div class="field fields ui input inline">
-              <label>Minimum users for shared anime</label>
-              <input type="number" name="minShared" v-model="minShared" class="one wide">
-            </div>
-          </div>
-        </div>
+        <Settings
+          :titleFormat="titleFormat"
+          @inputFormat="titleFormat = $event"
+          :minShared="minShared"
+          @inputShared="minShared = $event"
+        />
       </sui-form>
 
       <div class="ui dividing header"></div>
@@ -69,6 +46,7 @@
 import Vue from 'vue'
 import EntryList from './components/EntryList.vue'
 import Messages from './components/Messages.vue'
+import Settings from './components/Settings.vue'
 import UsersInput from './components/UsersInput.vue'
 
 import {getMediaLists} from './query.js'
@@ -97,6 +75,7 @@ export default {
   components: {
     EntryList,
     Messages,
+    Settings,
     UsersInput,
   },
   data () {
