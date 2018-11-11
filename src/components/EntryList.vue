@@ -28,12 +28,13 @@
     </sui-table-header>
 
     <transition-group name="rowfade" tag="tbody">
-      <Entry v-for="entry of filteredEntries"
+      <Entry v-for="entry of entries"
         :key="entry.media.id"
         :entry="entry"
         :users="users"
         :hideSelectActive="hideSelectActive"
-        v-show="entry.media.visible || hideSelectActive"
+        v-if="(users.length === 1 || entry.users.size >= Number(minShared))
+              && (entry.media.visible || hideSelectActive)"
       />
     </transition-group>
 
@@ -154,5 +155,13 @@ export default {
   /*** Hiding and showing entries ***/
   .rowfade-enter-active, .rowfade-leave-active {
     transition: all 0.5s;
+  }
+
+  .rowfade-enter, .rowfade-leave-to {
+    transform: scaleY(0);
+  }
+
+  .rowfade-move {
+    transition: transform 1s;
   }
 </style>
