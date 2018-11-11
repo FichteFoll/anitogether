@@ -1,31 +1,13 @@
 <template>
   <div id="app" class="center aligned">
     <div id="container" class="center aligned">
-      <div id="input-container">
+      <sui-form id="input-form">
         <div class="ui sub header">Users</div>
-        <div id="user-dropdown" class="ui fluid multiple search selection dropdown action">
-          <input name="users" type="hidden"
-              v-model.lazy="usersInput"
-              @change="fetchLists">
-          <i class="dropdown icon"></i>
-          <div class="default text">Search users…</div>
-          <div class="menu">
-            <div v-for="name of userHistory"
-                class="item"
-                v-bind:data-value="name">
-              {{ name }}
-            </div>
-            <div class="divider"></div>
-            <div class="header">
-              <button class="ui button tiny labeled icon compact"
-                  @click="clearUserHistory">
-                <i class="icon delete"></i>
-                Clear history
-              </button>
-            </div>
-            <!-- TODO search results from anilist? -->
-          </div>
-        </div>
+        <UsersInput
+          v-model="usersInput"
+          :userHistory="userHistory"
+          @clearHistory="clearUserHistory"
+        />
 
         <div class="ui sub header">Settings</div>
         <div class="ui form">
@@ -57,7 +39,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </sui-form>
 
       <div class="ui dividing header"></div>
 
@@ -79,6 +61,7 @@
 import Vue from 'vue'
 import EntryList from './components/EntryList.vue'
 import Messages from './components/Messages.vue'
+import UsersInput from './components/UsersInput.vue'
 
 import {getMediaLists} from './query.js'
 
@@ -127,10 +110,10 @@ let lastUserList = []
 
 
 export default {
-  name: 'app',
   components: {
     EntryList,
     Messages,
+    UsersInput,
   },
   data () {
     return {
@@ -138,14 +121,11 @@ export default {
       // https://github.com/vuejs/vue/issues/2410
       sourceEntries: {},
       users: {},
-      usersInput: "",  // set this later
-      userHistory: oldUserHistory,
+      usersInput: sanitizeInput(oldParams.users),
+      userHistory: [],
       titleFormat: oldParams.format,
       minShared: oldParams.minShared,
       hiddenEntries: sanitizeInput(oldParams.hide).map(Number),
-      booleans: { // Vue can't track raw booleans it seems?
-        disabled: true,
-      },
       messages: [],
     }
   },
@@ -180,16 +160,13 @@ export default {
       ret.sort((a, b) => a.media.title.userPreferred.localeCompare(b.media.title.userPreferred, "ja"))
       return ret
     },
-    usersInputList () {
-      return sanitizeInput(this.usersInput)
-    },
     /**
      * Order users in entries by user input.
      * @return {Array[Object]} Sorted user objects.
      */
     orderedUsers () {
       const orderedUsers = []
-      for (const name of this.usersInputList) {
+      for (const name of this.usersInput) {
         if (this.users[name]) {
           orderedUsers.push(this.users[name])
         }
@@ -197,12 +174,9 @@ export default {
       return orderedUsers
     },
   },
-  created () {
-    this.fetchLists()
-  },
   watch: {
     userHistory () {
-      setTimeout(() => {
+      this.$nextTick(() => {
         // Delay execution so the DOM is changed
         // before we ask the dropdown to refresh the selected items.
         try {
@@ -210,18 +184,16 @@ export default {
         } catch (e) {
           console.log("Unable to set localStorage")
         }
-        this.setDropdownItems(this.usersInputList)
       })
     },
     minShared () { this.updateLocation() },
-    usersInputList () { this.updateLocation() },
+    usersInput () { this.updateLocation() },
     titleFormat () { this.updateLocation() },
     hiddenEntries () { this.updateLocation() },
   },
   methods: {
     fetchLists () {
-      if (this.booleans.disabled) return
-      const userNames = this.usersInputList
+      const userNames = this.usersInput
       if (userNames.length === 0) return
       if (userNames.toString() === lastUserList.toString()) return
       lastUserList = userNames
@@ -291,9 +263,7 @@ export default {
      * @param {Array} items Items to set (user names).
      */
     setDropdownItems (items) {
-      this.booleans.disabled = true
       $('.dropdown').dropdown('set selected', items)
-      this.booleans.disabled = false
       this.fetchLists()
     },
     /**
@@ -301,7 +271,7 @@ export default {
      */
     updateLocation () {
       const params = {
-        users: this.usersInputList.join(","),
+        users: this.usersInput.join(","),
         format: this.titleFormat,
         minShared: this.minShared,
         hide: this.hiddenEntries.join(","),
@@ -347,15 +317,8 @@ export default {
     },
   },
   mounted () {
-    $('.ui.radio.checkbox')
-      .checkbox()
-    $('#user-dropdown')
-      .dropdown({
-        allowAdditions: true,
-        clearable: true,
-        sortSelect: true,
-      })
-    this.setDropdownItems(sanitizeInput(oldParams.users))
+    this.fetchLists()
+    this.updateUserHistory([...oldUserHistory, ...this.usersInput])
   },
 }
 </script>
