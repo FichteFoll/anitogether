@@ -289,7 +289,7 @@ export default {
         minShared: this.minShared,
         hide: this.hiddenEntries.join(","),
       }
-      const changeFor = new Set(["users"])
+      const replaceFor = new Set(["users"])
 
       const hash = "#" + Object.entries(params)
         .filter(([k, v]) => v != defaults[k])
@@ -297,11 +297,11 @@ export default {
         .join('&')
       const newUrl = location.origin + location.pathname + location.search + hash
 
-      const shouldChange = Object.entries(params)
+      const shouldReplace = Object.entries(params)
         .filter(([k, v]) => v != this.oldParams[k])
-        .every(([k]) => changeFor.has(k))
+        .every(([k]) => replaceFor.has(k))
 
-      if (shouldChange) {
+      if (shouldReplace) {
         location.assign(newUrl)
       } else {
         location.replace(newUrl)
