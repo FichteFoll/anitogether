@@ -4,12 +4,14 @@
   <sui-table
     class="entry-table"
     definition celled compact unstackable selectable
-    :class="{ editing: hideSelectActive }"
   >
     <sui-table-header>
       <sui-table-row>
         <sui-table-header-cell>Anime</sui-table-header-cell>
-        <sui-table-header-cell v-for="user of users" collapsing textAlign="right">
+        <sui-table-header-cell v-for="user of users"
+          :key="user.name"
+          collapsing textAlign="right"
+        >
           <a v-bind:href="`https://anilist.co/user/${user.name}`" target="_blank">
             <sui-image
               rounded size="mini"
@@ -21,7 +23,7 @@
         <sui-table-header-cell collapsing textAlign="right">
           Latest
         </sui-table-header-cell>
-        <sui-table-header-cell class="collapsing select-shows" textAlign="center">
+        <sui-table-header-cell collapsing textAlign="center" class="select-shows">
           <transition name="colfade">
             <div class="animate" v-if="hideSelectActive">
               Show <br> / Hide
@@ -42,7 +44,7 @@
       />
     </transition-group>
 
-    <sui-table-footer class="full-width">
+    <sui-table-footer fullWidth>
       <sui-table-header-cell v-bind:colspan="3 + users.length">
         <sui-button compact size="small" floated="right"
           :primary="hideSelectActive"
