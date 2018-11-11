@@ -1,0 +1,13 @@
+language: node_js
+node_js: "11.1"
+
+cache: yarn
+git:
+  depth: 1
+
+install:
+  - yarn install
+
+script: yarn build
+
+after_success: bash .travis/deploy.sh
