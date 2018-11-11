@@ -1,13 +1,13 @@
 <template>
+  <!-- TODO transitions -->
   <div id="messages">
-    <div v-for="(message, index) of messages"
-        class="ui message"
-        :class="[message.kind === 'error' ? 'negative' : message.kind]">
-      <i class="close icon" @click="$emit('dismiss', index)"></i>
-      <div class="header">{{ message.title || "" }}</div>
-      {{ message.text || "" }}
-      {{ message.count > 1 ? ` (${message.count})` : "" }}
-    </div>
+    <sui-message v-for="(message, index) of messages"
+      :class="[message.kind === 'error' ? 'negative' : message.kind]"
+      :header="(message.title || '') + (message.count > 1 ? ` (${message.count})` : '')"
+      :content="message.text"
+      dismissable
+      @dismiss="$emit('dismiss', index)"
+    />
   </div>
 </template>
 

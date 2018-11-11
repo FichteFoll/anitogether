@@ -333,35 +333,17 @@ export default {
      * @param  {[type]} title (optional)
      */
     showMessage (kind, text, title) {
-      const msgContainer = document.getElementById("messages")
-
-      // Check for existing message with same text and append a counter
-      for (const {lastChild: textNode} of msgContainer.querySelectorAll(".message.visible")) {
-        let oldText = textNode.textContent
-        if (oldText.includes(text.trim())) {
-          let num = 2
-          const match = /\((\d+)\)$/.exec(textNode.textContent)
-          if (match) {
-            oldText = oldText.substring(0, match.index)
-            num = Number(match[1]) + 1
-          }
-          textNode.textContent = `${oldText} (${num})`
+      if (!text || text === "") return
+      for (const message of this.messages) {
+        if (message.text === text) {
+          message.count += 1
           return
         }
       }
-
-      const cls = kind === 'error' ? 'negative' : kind
-      const html = `
-        <div class="ui message ${cls} hidden">
-          <i class="close icon"></i>
-          <div class="header">${title || ""}</div>
-          ${text || ""}
-        </div>
-      `
-      msgContainer.insertAdjacentHTML('beforeend', html)
-      const $msg = $("#messages .message:last-child")
-      $msg.find('.close').on('click', () => $msg.transition('fade'))
-      $msg.transition('fade')
+      this.messages.push({kind, text, title, count: 1})
+    },
+    dismissMessage (index) {
+      this.messages.splice(index, 1)
     },
   },
   mounted () {
