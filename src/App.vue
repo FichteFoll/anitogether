@@ -77,37 +77,13 @@ function sanitizeInput (inputString) {
   return Array.from(inputSet)
 }
 
-// Parse params and merge with defaults
+// Default parameters
 const defaults = {
   format: "romaji",
   minShared: 2,
   users: "",
   hide: "",
 }
-
-const hash2Obj = location.hash.substring(1)
-  .split("&")
-  .map(v => v.split("="))
-  .reduce(
-    (pre, [key, value]) => ({ ...pre, [key]: decodeURIComponent(value) }),
-    {}
-  )
-
-// Interpret params
-let oldParams = {...defaults, ...hash2Obj}
-let oldUserHistory = []
-try {
-  const storageHistory = localStorage.getItem('userHistory') || ""
-  if (storageHistory !== "") {
-    oldUserHistory = storageHistory.split(',')
-  }
-} catch (e) {
-  console.log("Unable to access localStorage")
-}
-
-// State tracking
-let lastUserList = []
-
 
 export default {
   components: {
@@ -121,13 +97,44 @@ export default {
       // https://github.com/vuejs/vue/issues/2410
       sourceEntries: {},
       users: {},
-      usersInput: sanitizeInput(oldParams.users),
+      usersInput: [],
       userHistory: [],
-      titleFormat: oldParams.format,
-      minShared: oldParams.minShared,
-      hiddenEntries: sanitizeInput(oldParams.hide).map(Number),
+      titleFormat: defaults.format,
+      minShared: defaults.minShared,
+      hiddenEntries: [],
       messages: [],
+      // Use this to track whether hash needs to change
+      // (and when we should add an entry to the history)
+      oldParams: {},
     }
+  },
+  created () {
+    const hash2Obj = location.hash.substring(1)
+      .split("&")
+      .map(v => v.split("="))
+      .reduce(
+        (pre, [key, value]) => ({ ...pre, [key]: decodeURIComponent(value) }),
+        {}
+      )
+
+    const params = {...defaults, ...hash2Obj}
+    let userHistory = []
+    try {
+      const storageHistory = localStorage.getItem('userHistory') || ""
+      if (storageHistory !== "") {
+        userHistory = storageHistory.split(',')
+      }
+    } catch (e) {
+      console.warn("Unable to access localStorage")
+    }
+
+    // Set data
+    this.oldParams = params
+    this.usersInput = sanitizeInput(params.users)
+    this.titleFormat = params.format
+    this.minShared = params.minShared
+    this.updateUserHistory([...userHistory, ...this.usersInput])
+    this.hiddenEntries = sanitizeInput(params.hide).map(Number)
   },
   computed: {
     entries () {
@@ -176,18 +183,14 @@ export default {
   },
   watch: {
     userHistory () {
-      this.$nextTick(() => {
-        // Delay execution so the DOM is changed
-        // before we ask the dropdown to refresh the selected items.
-        try {
-          localStorage.setItem('userHistory', this.userHistory.join(','))
-        } catch (e) {
-          console.log("Unable to set localStorage")
-        }
-      })
+      try {
+        localStorage.setItem('userHistory', this.userHistory.join(','))
+      } catch (e) {
+        console.warn("Unable to set localStorage")
+      }
     },
     minShared () { this.updateLocation() },
-    usersInput () { this.updateLocation() },
+    usersInput () { this.updateLocation(); this.fetchLists() },
     titleFormat () { this.updateLocation() },
     hiddenEntries () { this.updateLocation() },
   },
@@ -195,8 +198,6 @@ export default {
     fetchLists () {
       const userNames = this.usersInput
       if (userNames.length === 0) return
-      if (userNames.toString() === lastUserList.toString()) return
-      lastUserList = userNames
 
       console.log("fetching for", userNames)
       document.title = `AniTogether - ${userNames.join(", ")}`
@@ -247,24 +248,9 @@ export default {
     clearUserHistory () {
       this.userHistory = []
     },
-    toggleEntry (id) {
-      console.log(id)
-    },
     getMediaTitle (media) {
       // english and native may be null, so always fall back to romaji
       return media.title[this.titleFormat] || media.title.romaji
-    },
-    /**
-     * Set selected items in dropdown list.
-     * Needed to preserve order because directly setting the input
-     * loops over the wrong list first.
-     * See https://github.com/Semantic-Org/Semantic-UI/issues/3841.
-     *
-     * @param {Array} items Items to set (user names).
-     */
-    setDropdownItems (items) {
-      $('.dropdown').dropdown('set selected', items)
-      this.fetchLists()
     },
     /**
      * Update location hash parameters.
@@ -285,7 +271,7 @@ export default {
       const newUrl = location.origin + location.pathname + location.search + hash
 
       const shouldChange = Object.entries(params)
-        .filter(([k, v]) => v != oldParams[k])
+        .filter(([k, v]) => v != this.oldParams[k])
         .every(([k]) => changeFor.has(k))
 
       if (shouldChange) {
@@ -294,10 +280,10 @@ export default {
         location.replace(newUrl)
       }
 
-      oldParams = params
+      this.oldParams = params
     },
     /**
-     * Rener a message in the html.
+     * Render a message in the html.
      * @param  {String} kind  One of "error", "warning", "info", "positive".
      * @param  {[type]} text  (optional)
      * @param  {[type]} title (optional)
@@ -315,10 +301,6 @@ export default {
     dismissMessage (index) {
       this.messages.splice(index, 1)
     },
-  },
-  mounted () {
-    this.fetchLists()
-    this.updateUserHistory([...oldUserHistory, ...this.usersInput])
   },
 }
 </script>
