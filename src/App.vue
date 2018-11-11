@@ -88,7 +88,7 @@ function sanitizeInput (inputString) {
 // Default parameters
 const defaults = {
   format: "romaji",
-  minShared: 2,
+  minShared: "2",
   users: "",
   hide: "",
 }
@@ -117,32 +117,16 @@ export default {
     }
   },
   created () {
-    const hash2Obj = location.hash.substring(1)
-      .split("&")
-      .map(v => v.split("="))
-      .reduce(
-        (pre, [key, value]) => ({ ...pre, [key]: decodeURIComponent(value) }),
-        {}
-      )
-
-    const params = {...defaults, ...hash2Obj}
-    let userHistory = []
     try {
       const storageHistory = localStorage.getItem('userHistory') || ""
       if (storageHistory !== "") {
-        userHistory = storageHistory.split(',')
+        this.userHistory = storageHistory.split(',')
       }
     } catch (e) {
       console.warn("Unable to access localStorage")
     }
-
-    // Set data
-    this.oldParams = params
-    this.usersInput = sanitizeInput(params.users)
-    this.titleFormat = params.format
-    this.minShared = params.minShared
-    this.updateUserHistory([...userHistory, ...this.usersInput])
-    this.hiddenEntries = sanitizeInput(params.hide).map(Number)
+    this.loadHash()
+    window.addEventListener('hashchange', this.loadHash)
   },
   computed: {
     entries () {
@@ -238,11 +222,10 @@ export default {
           for (const {message} of json.errors) {
             this.showMessage("error", message)
           }
-          console.error("fetch error", json)
         })
     },
     /**
-     * Update userHistory in localStorage.
+     * Update userHistory and prevent duplicates (by using a Set).
      * @param  {Array} userNames Names to add.
      */
     updateUserHistory (userNames) {
@@ -259,6 +242,36 @@ export default {
     getMediaTitle (media) {
       // english and native may be null, so always fall back to romaji
       return media.title[this.titleFormat] || media.title.romaji
+    },
+    loadHash () {
+      console.log("loading hash")
+      const updateIfChanged = (prop, value) => {
+        // don't update props unnecessarily
+        const oldValue = this[prop]
+        if (JSON.stringify(oldValue) !== JSON.stringify(value)) {
+          this[prop] = value
+          console.log("setting", prop, value)
+          // this.$set(this, prop, value)
+          return true
+        }
+        return false
+      }
+
+      const hash2Obj = location.hash.substring(1)
+        .split("&")
+        .map(v => v.split("="))
+        .reduce(
+          (pre, [key, value]) => ({ ...pre, [key]: decodeURIComponent(value) }),
+          {}
+        )
+      const params = {...defaults, ...hash2Obj}
+
+      // Set data
+      if (!updateIfChanged('oldParams', params)) return // short-circuit
+      updateIfChanged('usersInput', sanitizeInput(params.users))
+      updateIfChanged('titleFormat', params.format)
+      updateIfChanged('minShared', params.minShared)
+      updateIfChanged('hiddenEntries', sanitizeInput(params.hide).map(Number))
     },
     /**
      * Update location hash parameters.
