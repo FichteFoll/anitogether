@@ -7,13 +7,16 @@
         :class="{ finished: entry.media.status === 'FINISHED' }"
         :title="entry.media.status === 'RELEASING' ? 'Releasing' : ''"
       >
-        <!-- <transition name="rowfade"> -->
-          <div class="animate">
-            <a v-bind:href="`https://anilist.co/anime/${entry.media.id}`" target="_blank">
+        <transition name="title" mode="out-in">
+          <div class="animate" :key="entry.media.title.userPreferred">
+            <a
+              v-bind:href="`https://anilist.co/anime/${entry.media.id}`"
+              target="_blank"
+            >
               {{ entry.media.title.userPreferred }}
             </a>
           </div>
-        <!-- </transition> -->
+        </transition>
       </sui-table-header-cell>
       <sui-table-cell v-for="user of users"
         :key="user.name"
@@ -69,6 +72,26 @@ export default {
     color: hsl(93, 72%, 25%);
   }
 
+  .animate .checkbox.toggle {
+    display: block;
+    min-height: 0;
+  }
+
+  /*** Switching title format ***/
+  .title-enter-active, .title-leave-active {
+    transition: all 0.2s;
+  }
+  .title-enter {
+    transform: translateX(2em);
+    opacity: 0;
+  }
+  .title-leave-to {
+    transform: translateX(-2em);
+    opacity: 0;
+  }
+
+
+  /*** Fading table row components ***/
   /* Reset padding on cells because we can't animate that */
   .ui.compact.table .entry td,
   .ui.compact.table .entry th {
