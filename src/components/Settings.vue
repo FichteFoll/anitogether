@@ -15,11 +15,22 @@
       </sui-form-fields>
     </sui-form-field>
 
-    <sui-form-field >
+    <sui-form-field>
       <label>Minimum users for shared anime</label>
       <input class="minshared-input" type="number" name="minShared" :value="minShared"
         @input="$emit('inputShared', $event.target.value)"
       />
+    </sui-form-field>
+
+    <sui-form-field>
+      <label>History</label>
+      <sui-button
+        floated="right"
+        icon="delete"
+        @click="$emit('clearHistory')"
+      >
+        Clear history
+      </sui-button>
     </sui-form-field>
   </sui-form-fields>
 </template>

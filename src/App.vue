@@ -6,7 +6,6 @@
         <UsersInput
           v-model="usersInput"
           :userHistory="userHistory"
-          @clearHistory="clearUserHistory"
         />
 
         <sui-header sub>Settings</sui-header>
@@ -15,6 +14,7 @@
           @inputFormat="titleFormat = $event"
           :minShared="minShared"
           @inputShared="minShared = $event"
+          @clearHistory="clearUserHistory"
         />
       </sui-form>
 
