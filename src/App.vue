@@ -218,9 +218,15 @@ export default {
             Vue.set(this.users, user.name, user)
           }
         })
-        .catch((json) => {
-          for (const {message} of json.errors) {
-            this.showMessage("error", message)
+        .catch((error) => {
+          if (error instanceof Error) {
+            this.showMessage(error.message)
+          } else if (error.errors) { // actually payload
+            for (const {message} of error.errors) {
+              this.showMessage("error", message)
+            }
+          } else {
+            console.error("fetch error", error)
           }
         })
     },

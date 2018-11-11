@@ -67,12 +67,14 @@ export function getMediaLists (userNames, status) {
     .catch((json) => {
       // Attempt to determine user that wasn't found
       // and replace message.
-      for (const error of json.errors) {
-        const {message, locations} = error
-        if (message === "User not found") {
-          const [{line}] = locations
-          const userIndex = (line - tmplOffset) / tmplLen
-          error.message = `User ${userNames[Math.floor(userIndex)]} not found`
+      if (json.errors) {
+        for (const error of json.errors) {
+          const {message, locations} = error
+          if (message === "User not found") {
+            const [{line}] = locations
+            const userIndex = (line - tmplOffset) / tmplLen
+            error.message = `User ${userNames[Math.floor(userIndex)]} not found`
+          }
         }
       }
       return Promise.reject(json)
