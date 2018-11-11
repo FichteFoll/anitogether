@@ -21,8 +21,12 @@
         <sui-table-header-cell collapsing textAlign="right">
           Latest
         </sui-table-header-cell>
-        <sui-table-header-cell class="collapsing select-shows">
-          <div class="animate">Show <br> / Hide</div>
+        <sui-table-header-cell class="collapsing select-shows" textAlign="center">
+          <transition name="colfade">
+            <div class="animate" v-if="hideSelectActive">
+              Show <br> / Hide
+            </div>
+          </transition>
         </sui-table-header-cell>
       </sui-table-row>
     </sui-table-header>
@@ -135,21 +139,27 @@ export default {
     background: white;
   }
 
-  /*** Sliders ***/
-  .select-shows {
-    transition: 0.5s;
+  /*** Columns ***/
+  .ui.compact.table th.select-shows {
+    padding: 0;
   }
-  .entry-table:not(.editing) .select-shows {
+  .select-shows .animate {
+    padding: .5em .7em;
+  }
+
+  .colfade-enter-active, .colfade-leave-active {
+    transition: all 0.5s;
+  }
+
+  .colfade-enter, .colfade-leave-to {
+    border-width: 0px;
     padding-left: 0;
     padding-right: 0;
-    border-width: 0;
-  }
-  .entry-table:not(.editing) .select-shows * { /* this selector is not optimal, but ┐(°ヮ°)┌ */
     transform: scaleX(0);
-    width: 0;
+    width: 0px;
     /*padding: 0;*/
-    font-size: 0;
-    min-width: 0;
+    /*font-size: 0;*/
+    min-width: 0px;
   }
 
   /*** Hiding and showing entries ***/

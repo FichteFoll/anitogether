@@ -20,8 +20,9 @@
 
       <sui-table-cell v-for="user of users"
         :key="user.name"
+        collapsing textAlign="right"
         v-if="entry.users.has(user.name)"
-        class="episode progress right aligned collapsing"
+        class="episode progress"
         v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
                        negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
         v-bind:title="entry.users.get(user.name).score + ' / 10'"
@@ -32,8 +33,8 @@
       </sui-table-cell>
       <sui-table-cell v-else></sui-table-cell>
 
-      <sui-table-cell
-        class="episode latest right aligned collapsing"
+      <sui-table-cell collapsing textAlign="right"
+        class="episode latest"
         v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }"
       >
         <div class="animate">
@@ -41,10 +42,12 @@
         </div>
       </sui-table-cell>
 
-      <sui-table-header-cell class="collapsing select-shows">
-        <div class="animate">
-          <sui-checkbox toggle v-model="entry.media.visible" />
-        </div>
+      <sui-table-header-cell collapsing>
+        <transition name="colfade">
+          <div class="animate" v-if="hideSelectActive">
+            <sui-checkbox toggle v-model="entry.media.visible" />
+          </div>
+        </transition>
       </sui-table-header-cell>
     </sui-table-row>
 </template>
@@ -84,15 +87,34 @@ export default {
   }
 
 
+  /*** Columns ***/
+  .colfade-enter-active, .colfade-leave-active {
+    transition: all 0.5s;
+  }
+
+  .colfade-enter, .colfade-leave-to {
+    border-width: 0px;
+    padding-left: 0;
+    padding-right: 0;
+    transform: scaleX(0);
+    width: 0px;
+    /*padding: 0;*/
+    /*font-size: 0;*/
+    min-width: 0px;
+  }
+
+
   /*** Fading table row components ***/
   /* Reset padding on cells because we can't animate that */
   .ui.compact.table .entry td,
   .ui.compact.table .entry th {
     padding: 0;
   }
-
   .entry .animate {
     padding: .5em .7em;
+  }
+
+  .rowfade-enter-active .animate, .rowfade-leave-active .animate {
     transition: all 0.5s;
   }
 
