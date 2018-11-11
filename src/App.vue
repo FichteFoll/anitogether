@@ -43,9 +43,17 @@
 
       <div class="ui dividing header"></div>
 
-      <Messages :messages="messages" @dismiss="dismissMessage" />
+      <Messages
+        :messages="messages"
+        @dismiss="dismissMessage"
+      />
 
-      <EntryList :entries="entries" :users="orderedUsers" :minShared="minShared" />
+      <EntryList
+        :entries="entries"
+        :users="orderedUsers"
+        :minShared="minShared"
+        @updateHidden="hiddenEntries = $event"
+      />
 
       <footer>
         Made by <a href="https://github.com/FichteFoll" target="_blank">FichteFoll</a>;

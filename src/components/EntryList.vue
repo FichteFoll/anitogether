@@ -128,9 +128,10 @@ export default {
       // $('.select-shows:not(.selected)').transition('fade left')
 
       if (!this.hideSelectActive) {
-        this.hiddenEntries = this.entries
+        const hiddenEntries = this.entries
           .filter(({media}) => !media.visible)
           .map(({media}) => media.id)
+        this.$emit('updateHidden', hiddenEntries)
       }
     },
   },
