@@ -27,46 +27,15 @@
       </sui-table-row>
     </sui-table-header>
 
-    <sui-table-body>
-      <sui-table-row v-for="entry of filteredEntries"
+    <transition-group name="rowfade" tag="tbody">
+      <Entry v-for="entry of filteredEntries"
         :key="entry.media.id"
-        class="entry"
-        v-bind:class="{ 'hide-entry': !entry.media.visible }"
-      >
-        <sui-table-header-cell class="title"
-          :positive="entry.media.status === 'RELEASING'"
-          :class="{ finished: entry.media.status === 'FINISHED' }"
-          :title="entry.media.status === 'RELEASING' ? 'Releasing' : ''"
-        >
-          <div class="animate">
-            <a v-bind:href="`https://anilist.co/anime/${entry.media.id}`" target="_blank">
-              {{ entry.media.title.userPreferred }}
-            </a>
-          </div>
-        </sui-table-header-cell>
-        <sui-table-cell v-for="user of users"
-          v-if="entry.users.has(user.name)"
-          class="episode progress right aligned collapsing"
-          v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
-                         negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
-          v-bind:title="entry.users.get(user.name).score + ' / 10'"
-        >
-          <div class="animate">
-            {{ entry.users.get(user.name).progress || "" }}
-          </div>
-        </sui-table-cell>
-        <sui-table-cell v-else></sui-table-cell>
-        <sui-table-cell class="episode latest right aligned collapsing"
-            v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }">
-          <div class="animate">
-            {{ entry.media.latestEpisode }}
-          </div>
-        </sui-table-cell>
-        <sui-table-header-cell class="collapsing select-shows">
-          <sui-checkbox toggle v-model="entry.media.visible" class="animate"/>
-        </sui-table-header-cell>
-      </sui-table-row>
-    </sui-table-body>
+        :entry="entry"
+        :users="users"
+        :hideSelectActive="hideSelectActive"
+        v-show="entry.media.visible || hideSelectActive"
+      />
+    </transition-group>
 
     <sui-table-footer class="full-width">
       <sui-table-header-cell v-bind:colspan="3 + users.length">
@@ -90,8 +59,12 @@
 </template>
 
 <script>
+import Entry from './Entry.vue'
 
 export default {
+  components: {
+    Entry,
+  },
   props: {
     entries: Array,
     users: Array,
@@ -147,11 +120,6 @@ export default {
 </script>
 
 <style type="text/css" scoped>
-  /*** Misc formatting ***/
-  th.title.positive a {
-    color: hsl(93, 72%, 25%);
-  }
-
   /*** Sticky table head ***/
   /* Must be on th because of chrome (and edge) bug
    * https://caniuse.com/#feat=css-sticky
@@ -166,9 +134,8 @@ export default {
     background: white;
   }
 
-  /*** Hiding and showing entries ***/
-  .select-shows, .select-shows *,
-  .hide-entry > * {
+  /*** Sliders ***/
+  .select-shows {
     transition: 0.5s;
   }
   .entry-table:not(.editing) .select-shows {
@@ -183,16 +150,9 @@ export default {
     font-size: 0;
     min-width: 0;
   }
-  /*.entry-table:not(.editing) .hide-entry .animate {*/
-  .entry-table:not(.editing) .hide-entry > *,
-  .entry-table:not(.editing) .hide-entry .animate {
-    /*transform: scaleY(0);*/
-    height: 0;
-    min-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-width: 0;
-    font-size: 0;
-    line-height: 0;
+
+  /*** Hiding and showing entries ***/
+  .rowfade-enter-active, .rowfade-leave-active {
+    transition: all 0.5s;
   }
 </style>
