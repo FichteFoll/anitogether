@@ -39,11 +39,7 @@
         :entry="entry"
         :users="users"
         :hideSelectActive="hideSelectActive"
-        v-if="(users.length === 1
-               || (allShared ? entry.users.size === users.length : entry.users.size >= minShared))
-              && (!hideSeen
-                  || Array.from(entry.users.values()).some(user => user.progress !== entry.media.latestEpisode))
-              && (entry.media.visible || hideSelectActive)"
+        v-if="shouldShowEntry(entry)"
       />
     </transition-group>
 
@@ -126,6 +122,17 @@ export default {
           .map(({media}) => media.id)
         this.$emit('updateHidden', hiddenEntries)
       }
+    },
+    shouldShowEntry (entry) {
+      const shareFilter = this.users.length === 1
+                          || (
+                            this.allShared
+                              ? entry.users.size === this.users.length
+                              : entry.users.size >= this.minShared)
+      const seenFilter = !this.hideSeen
+                         || Array.from(entry.users.values()).some(user => user.progress !== entry.media.latestEpisode)
+      const selectUiFilter = entry.media.visible || this.hideSelectActive
+      return shareFilter && seenFilter && selectUiFilter
     },
   },
 }
