@@ -14,6 +14,8 @@
           @inputFormat="titleFormat = $event"
           :minShared="minShared"
           @inputMinShared="minShared = Math.min(usersInput.length, $event)"
+          :allShared="allShared"
+          @inputAllShared="allShared = $event"
           @clearHistory="clearUserHistory"
           :hideSeen="hideSeen"
           @inputHideSeen="hideSeen = $event"
@@ -32,6 +34,7 @@
         :users="orderedUsers"
         :minShared="minShared"
         :hideSeen="hideSeen"
+        :allShared="allShared"
         @updateHidden="hiddenEntries = $event"
       />
 
@@ -73,6 +76,7 @@ const defaults = {
   format: "romaji",
   minShared: 2,
   hideSeen: false,
+  all: false,
   hide: "",
 }
 
@@ -93,6 +97,7 @@ export default {
       userHistory: [],
       titleFormat: defaults.format,
       minShared: defaults.minShared,
+      allShared: defaults.all,
       hiddenEntries: [],
       hideSeen: defaults.hideSeen,
       messages: [],
@@ -171,6 +176,7 @@ export default {
     titleFormat () { this.updateLocation() },
     hiddenEntries () { this.updateLocation() },
     hideSeen () { this.updateLocation() },
+    allShared () { this.updateLocation() },
   },
   methods: {
     fetchLists () {
@@ -262,6 +268,7 @@ export default {
       updateIfChanged('titleFormat', params.format)
       updateIfChanged('minShared', Number(params.minShared))
       updateIfChanged('hideSeen', params.hideSeen == 'true')
+      updateIfChanged('allShared', params.all == 'true')
       updateIfChanged('hiddenEntries', sanitizeInput(params.hide).map(Number))
     },
     /**
@@ -275,6 +282,7 @@ export default {
         format: this.titleFormat,
         minShared: this.minShared,
         hideSeen: this.hideSeen,
+        all: this.allShared,
         hide: this.hiddenEntries.join(","),
       }
       const replaceFor = new Set(["users"])
