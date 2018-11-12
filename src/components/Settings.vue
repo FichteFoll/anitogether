@@ -18,7 +18,7 @@
     <sui-form-field>
       <label>Minimum users for shared anime</label>
       <sui-input type="number" :value="minShared"
-        @input="$emit('inputShared', Number($event))"
+        @input="$emit('inputMinShared', Number($event))"
       />
     </sui-form-field>
 
@@ -32,6 +32,15 @@
         Clear history
       </sui-button>
     </sui-form-field>
+
+    <sui-form-field>
+      <label>Other</label>
+      <sui-checkbox
+        label="Hide seen by all"
+        :inputValue="hideSeen"
+        @change="$emit('inputHideSeen', $event)"
+      />
+    </sui-form-field>
   </sui-form-fields>
 </template>
 
@@ -40,6 +49,7 @@ export default {
   props: {
     minShared: Number,
     titleFormat: String,
+    hideSeen: Boolean,
   },
   data () {
     return {

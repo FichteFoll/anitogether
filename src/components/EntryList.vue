@@ -40,6 +40,7 @@
         :users="users"
         :hideSelectActive="hideSelectActive"
         v-if="(users.length === 1 || entry.users.size >= minShared)
+              && (!hideSeen || Array.from(entry.users.values()).some(user => user.progress !== entry.media.latestEpisode))
               && (entry.media.visible || hideSelectActive)"
       />
     </transition-group>
@@ -76,6 +77,7 @@ export default {
     entries: Array,
     users: Array,
     minShared: Number,
+    hideSeen: Boolean,
   },
   data () {
     return {

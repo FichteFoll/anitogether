@@ -13,8 +13,10 @@
           :titleFormat="titleFormat"
           @inputFormat="titleFormat = $event"
           :minShared="minShared"
-          @inputShared="minShared = Number($event)"
+          @inputMinShared="minShared = $event"
           @clearHistory="clearUserHistory"
+          :hideSeen="hideSeen"
+          @inputHideSeen="hideSeen = $event"
         />
       </sui-form>
 
@@ -29,6 +31,7 @@
         :entries="entries"
         :users="orderedUsers"
         :minShared="minShared"
+        :hideSeen="hideSeen"
         @updateHidden="hiddenEntries = $event"
       />
 
@@ -69,6 +72,7 @@ const defaults = {
   users: "",
   format: "romaji",
   minShared: 2,
+  hideSeen: false,
   hide: "",
 }
 
@@ -90,6 +94,7 @@ export default {
       titleFormat: defaults.format,
       minShared: defaults.minShared,
       hiddenEntries: [],
+      hideSeen: defaults.hideSeen,
       messages: [],
       // Use this to track whether hash needs to change
       // (and when we should add an entry to the history)
@@ -165,6 +170,7 @@ export default {
     usersInput () { this.updateLocation(); this.fetchLists() },
     titleFormat () { this.updateLocation() },
     hiddenEntries () { this.updateLocation() },
+    hideSeen () { this.updateLocation() },
   },
   methods: {
     fetchLists () {
@@ -255,6 +261,7 @@ export default {
       updateIfChanged('usersInput', sanitizeInput(params.users))
       updateIfChanged('titleFormat', params.format)
       updateIfChanged('minShared', Number(params.minShared))
+      updateIfChanged('hideSeen', params.hideSeen == 'true')
       updateIfChanged('hiddenEntries', sanitizeInput(params.hide).map(Number))
     },
     /**
@@ -267,6 +274,7 @@ export default {
         users: this.usersInput.join(","),
         format: this.titleFormat,
         minShared: this.minShared,
+        hideSeen: this.hideSeen,
         hide: this.hiddenEntries.join(","),
       }
       const replaceFor = new Set(["users"])
