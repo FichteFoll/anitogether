@@ -13,7 +13,7 @@
           :titleFormat="titleFormat"
           @inputFormat="titleFormat = $event"
           :minShared="minShared"
-          @inputShared="minShared = $event"
+          @inputShared="minShared = Number($event)"
           @clearHistory="clearUserHistory"
         />
       </sui-form>
@@ -68,7 +68,7 @@ function sanitizeInput (inputString) {
 const defaults = {
   users: "",
   format: "romaji",
-  minShared: "2",
+  minShared: 2,
   hide: "",
 }
 
@@ -254,7 +254,7 @@ export default {
       // TODO this causes updateLocation to be called 4 times on first load
       updateIfChanged('usersInput', sanitizeInput(params.users))
       updateIfChanged('titleFormat', params.format)
-      updateIfChanged('minShared', params.minShared)
+      updateIfChanged('minShared', Number(params.minShared))
       updateIfChanged('hiddenEntries', sanitizeInput(params.hide).map(Number))
     },
     /**

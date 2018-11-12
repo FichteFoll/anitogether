@@ -17,8 +17,8 @@
 
     <sui-form-field>
       <label>Minimum users for shared anime</label>
-      <input class="minshared-input" type="number" name="minShared" :value="minShared"
-        @input="$emit('inputShared', $event.target.value)"
+      <sui-input type="number" :value="minShared"
+        @input="$emit('inputShared', Number($event))"
       />
     </sui-form-field>
 
@@ -38,12 +38,12 @@
 <script>
 export default {
   props: {
-    minShared: String,
+    minShared: Number,
     titleFormat: String,
   },
   data () {
     return {
-      current: "romaji", // need this for some reason
+      current: "romaji", // need this to sync radios
       formats: [
         { label: "Romaji",  value: "romaji" },
         { label: "English", value: "english" },

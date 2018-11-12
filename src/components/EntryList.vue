@@ -39,7 +39,7 @@
         :entry="entry"
         :users="users"
         :hideSelectActive="hideSelectActive"
-        v-if="(users.length === 1 || entry.users.size >= Number(minShared))
+        v-if="(users.length === 1 || entry.users.size >= minShared)
               && (entry.media.visible || hideSelectActive)"
       />
     </transition-group>
@@ -75,7 +75,7 @@ export default {
   props: {
     entries: Array,
     users: Array,
-    minShared: String,
+    minShared: Number,
   },
   data () {
     return {
