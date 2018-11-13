@@ -54,13 +54,8 @@
              ? "Hide shows"
              : "Select shows" }}
         </sui-button>
-        <span class="stats">
-          {{ stats.count }} {{ (users.length > 1) ? "shared" : "" }} anime
-          {{ stats.countReleasing > 0 ? `, ${stats.countReleasing} releasing` : "" }}
-          {{ stats.hidden > 0 ? `, ${stats.hidden} hidden` : "" }}
-          {{ stats.belowThreshold > 0 ? `, ${stats.belowThreshold} below threshold` : "" }}
-          {{ stats.seen > 0 ? `, ${stats.seen} seen by all` : "" }}
-        </span>
+
+        <span class="stats" v-html="statsString"></span>
       </sui-table-header-cell>
     </sui-table-footer>
   </sui-table>
@@ -96,12 +91,19 @@ export default {
       const visible = notSeen.filter(({media}) => media.visible)
       const releasing = visible.filter(({media}) => media.status === 'RELEASING')
       return {
-        count: visible.length,
-        countReleasing: releasing.length,
+        total: visible.length,
+        releasing: releasing.length,
         hidden: notSeen.length - visible.length,
         belowThreshold: this.entries.length - notBelowThreshold.length,
         seen: notBelowThreshold.length - notSeen.length,
       }
+    },
+    statsString () {
+      return `${this.stats.total}${this.users.length > 1 ? " shared" : ""} anime`
+        + (this.stats.releasing > 0 ? `, ${this.stats.releasing} releasing` : "")
+        + (this.stats.hidden > 0 ? `, ${this.stats.hidden} hidden` : "")
+        + (this.stats.belowThreshold > 0 ? `, ${this.stats.belowThreshold} below threshold` : "")
+        + (this.stats.seen > 0 ? `, ${this.stats.seen} up to date` : "")
     },
   },
   methods: {
