@@ -99,7 +99,8 @@ export default {
       }
     },
     statsString () {
-      return `${this.stats.total}${this.users.length > 1 ? " shared" : ""} anime`
+      const shared = this.users.length > 1 && (this.allShared || this.minShared > 1)
+      return `${this.stats.total}${shared ? " shared" : ""} anime`
         + (this.stats.releasing > 0 ? `, ${this.stats.releasing} releasing` : "")
         + (this.stats.hidden > 0 ? `, ${this.stats.hidden} hidden` : "")
         + (this.stats.belowThreshold > 0 ? `, ${this.stats.belowThreshold} below threshold` : "")
