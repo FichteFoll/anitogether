@@ -19,6 +19,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "node-sass": "^4.10.0",
+    "sass-loader": "^7.1.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-vue": "^0.5.1",
     "vue": "^2.5.17"

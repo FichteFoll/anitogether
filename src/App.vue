@@ -328,17 +328,15 @@ export default {
 }
 </script>
 
-<style>
-  #app {
-    margin: 2em;
-  }
+<style lang="sass">
+  #app
+    margin: 2em
 
-  #container {
-    max-width: 800px;
-    margin: auto;
-  }
+  #container
+    max-width: 800px
+    margin: auto
 
-  footer {
-    text-align: right;
-  }
+  footer
+    text-align: right
+
 </style>

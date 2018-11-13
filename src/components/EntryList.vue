@@ -135,54 +135,46 @@ export default {
 }
 </script>
 
-<style type="text/css" scoped>
+<style lang="sass">
   /*** Sticky table head ***/
   /* Must be on th because of chrome (and edge) bug
    * https://caniuse.com/#feat=css-sticky
    */
-  thead th {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-  }
-  thead th:first-child {
+  thead th
+    position: sticky
+    top: 0
+    z-index: 5
+
+  thead th:first-child
     /* Otherwise background is transparent */
-    background: white;
-  }
+    background: white
 
   /*** Columns ***/
-  .ui.compact.table th.select-shows {
-    padding: 0;
-  }
-  .select-shows .animate {
-    padding: .5em .7em;
-  }
+  .ui.compact.table th.select-shows
+    padding: 0
+  .select-shows .animate
+    padding: .5em .7em
 
-  .colfade-enter-active, .colfade-leave-active {
-    transition: all 0.5s;
-  }
+  .colfade-enter-active, .colfade-leave-active
+    transition: all 0.5s
 
-  .colfade-enter, .colfade-leave-to {
-    border-width: 0px;
-    padding-left: 0;
-    padding-right: 0;
-    transform: scaleX(0);
-    width: 0px;
-    /*padding: 0;*/
-    /*font-size: 0;*/
-    min-width: 0px;
-  }
+  .colfade-enter, .colfade-leave-to
+    border-width: 0px
+    padding-left: 0
+    padding-right: 0
+    transform: scaleX(0)
+    width: 0px
+    /*padding: 0*/
+    /*font-size: 0*/
+    min-width: 0px
 
   /*** Hiding and showing entries ***/
-  .rowfade-enter-active, .rowfade-leave-active {
-    transition: all 0.5s;
-  }
+  .rowfade-enter-active, .rowfade-leave-active
+    transition: all 0.5s
 
-  .rowfade-enter, .rowfade-leave-to {
-    transform: scaleY(0);
-  }
+  .rowfade-enter, .rowfade-leave-to
+    transform: scaleY(0)
 
-  .rowfade-move {
-    transition: transform 1s;
-  }
+  .rowfade-move
+    transition: transform 1s
 </style>

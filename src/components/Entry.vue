@@ -63,77 +63,65 @@ export default {
 }
 </script>
 
-<style type="text/css" scoped>
-  .title.positive a {
-    color: hsl(93, 72%, 25%);
-  }
+<style lang="sass">
+  .title.positive a
+    color: hsl(93, 72%, 25%)
 
-  .animate .checkbox.toggle {
-    display: block;
-    min-height: 0;
-  }
+  .animate .checkbox.toggle
+    display: block
+    min-height: 0
 
   /*** Switching title format ***/
-  .title-enter-active, .title-leave-active {
-    transition: all 0.2s;
-  }
-  .title-enter {
-    transform: translateX(2em);
-    opacity: 0;
-  }
-  .title-leave-to {
-    transform: translateX(-2em);
-    opacity: 0;
-  }
+  .title-enter-active, .title-leave-active
+    transition: all 0.2s
+  .title-enter
+    transform: translateX(2em)
+    opacity: 0
+  .title-leave-to
+    transform: translateX(-2em)
+    opacity: 0
 
 
   /*** Columns ***/
-  .colfade-enter-active, .colfade-leave-active {
-    transition: all 0.5s;
-  }
+  .colfade-enter-active, .colfade-leave-active
+    transition: all 0.5s
+    .animate
+      transition: all 0.5s
 
-  .colfade-enter, .colfade-leave-to {
-    border-width: 0px;
-    padding-left: 0;
-    padding-right: 0;
-    transform: scaleX(0);
-    width: 0px;
-    /*padding: 0;*/
-    /*font-size: 0;*/
-    min-width: 0px;
-  }
+  .colfade-enter, .colfade-leave-to
+    border-width: 0px
+    padding-left: 0
+    padding-right: 0
+    transform: scaleX(0)
+    width: 0px
+    /*padding: 0*/
+    /*font-size: 0*/
+    min-width: 0px
 
 
   /*** Fading table row components ***/
   /* Reset padding on cells because we can't animate that */
-  .ui.compact.table .entry td,
-  .ui.compact.table .entry th {
-    padding: 0;
-  }
-  .entry .animate {
-    padding: .5em .7em;
-  }
+  .ui.compact.table .entry
+    td, th
+      padding: 0
+  .entry .animate
+    padding: .5em .7em
 
-  .rowfade-enter-active .animate, .rowfade-leave-active .animate {
-    transition: all 0.5s;
-  }
+  .rowfade-enter, .rowfade-leave-to
+    .animate
+      /*height: 0px*/
+      min-height: 0px
+      padding-top: 0
+      padding-bottom: 0
+      border-width: 0px
+      line-height: 0px /* unit is required */
 
-  .rowfade-enter .animate, .rowfade-leave-to .animate {
-    /*height: 0px;*/
-    min-height: 0px;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-width: 0px;
-    line-height: 0px; /* unit is required */
-  }
   /* WHY DOES THIS NOT MATCH IM FUCKING LOSING IT */
   .animate .checkbox.toggle /deep/ label,
   .rowfade-enter .animate .checkbox.toggle /deep/ label,
-  .rowfade-leave-to .animate .checkbox.toggle /deep/ label, {
-    min-height: 0rem;
-  }
-  .animate .checkbox.toggle {
-    display: block;
-    min-height: 0;
-  }
+  .rowfade-leave-to .animate .checkbox.toggle /deep/ label,
+    min-height: 0rem
+  .animate .checkbox.toggle
+    display: block
+    min-height: 0
 </style>
