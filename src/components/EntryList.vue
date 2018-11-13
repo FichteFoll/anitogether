@@ -39,7 +39,8 @@
         :entry="entry"
         :users="users"
         :hideSelectActive="hideSelectActive"
-        v-if="shouldShowEntry(entry)"
+        v-if="!isBelowThreshold(entry) && !isSeen(entry)
+              && (entry.media.visible || this.hideSelectActive)"
       />
     </transition-group>
 
@@ -58,6 +59,7 @@
           {{ stats.countReleasing > 0 ? `, ${stats.countReleasing} releasing` : "" }}
           {{ stats.hidden > 0 ? `, ${stats.hidden} hidden` : "" }}
           {{ stats.belowThreshold > 0 ? `, ${stats.belowThreshold} below threshold` : "" }}
+          {{ stats.seen > 0 ? `, ${stats.seen} seen by all` : "" }}
         </span>
       </sui-table-header-cell>
     </sui-table-footer>
@@ -89,27 +91,17 @@ export default {
      * @return {Object}
      */
     stats () {
-      const visibleEntries = this.filteredEntries.filter(({media}) => media.visible)
+      const notBelowThreshold = this.entries.filter(e => !this.isBelowThreshold(e))
+      const notSeen = notBelowThreshold.filter(e => !this.isSeen(e))
+      const visible = notSeen.filter(({media}) => media.visible)
+      const releasing = visible.filter(({media}) => media.status === 'RELEASING')
       return {
-        count: visibleEntries.length,
-        countReleasing: visibleEntries
-          .filter(({media}) => media.status === 'RELEASING').length,
-        hidden: this.filteredEntries.length - visibleEntries.length,
-        belowThreshold: this.entries.length - this.filteredEntries.length,
+        count: visible.length,
+        countReleasing: releasing.length,
+        hidden: notSeen.length - visible.length,
+        belowThreshold: this.entries.length - notBelowThreshold.length,
+        seen: notBelowThreshold.length - notSeen.length,
       }
-    },
-    /**
-     * Filter entries based on criteria (but do not hide).
-     * @return {Object}
-     */
-    filteredEntries () {
-      const dstEntries = []
-      for (const entry of this.entries) {
-        if (this.users.length === 1 || entry.users.size >= Number(this.minShared)) {
-          dstEntries.push(entry)
-        }
-      }
-      return dstEntries
     },
   },
   methods: {
@@ -123,16 +115,18 @@ export default {
         this.$emit('updateHidden', hiddenEntries)
       }
     },
-    shouldShowEntry (entry) {
-      const shareFilter = this.users.length === 1
-                          || (
-                            this.allShared
-                              ? entry.users.size === this.users.length
-                              : entry.users.size >= this.minShared)
-      const seenFilter = !this.hideSeen
-                         || Array.from(entry.users.values()).some(user => user.progress !== entry.media.latestEpisode)
-      const selectUiFilter = entry.media.visible || this.hideSelectActive
-      return shareFilter && seenFilter && selectUiFilter
+    isBelowThreshold (entry) {
+      return this.users.length > 1
+             && (this.allShared
+               ? entry.users.size < this.users.length
+               : entry.users.size < Math.min(this.minShared, this.users.length))
+    },
+    isSeen (entry) {
+      if (this.hideSeen) {
+        const users = Array.from(entry.users.values())
+        return users.every(user => user.progress === entry.media.latestEpisode)
+      }
+      return false
     },
   },
 }

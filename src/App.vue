@@ -13,7 +13,7 @@
           :titleFormat="titleFormat"
           @inputFormat="titleFormat = $event"
           :minShared="minShared"
-          @inputMinShared="minShared = Math.min(usersInput.length, $event)"
+          @inputMinShared="minShared = $event"
           :allShared="allShared"
           @inputAllShared="allShared = $event"
           @clearHistory="clearUserHistory"
