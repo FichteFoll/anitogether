@@ -100,11 +100,17 @@ export default {
     },
     statsString () {
       const shared = this.users.length > 1 && (this.allShared || this.minShared > 1)
-      return `${this.stats.total}${shared ? " shared" : ""} anime`
-        + (this.stats.releasing > 0 ? `, ${this.stats.releasing} releasing` : "")
-        + (this.stats.hidden > 0 ? `, ${this.stats.hidden} hidden` : "")
-        + (this.stats.belowThreshold > 0 ? `, ${this.stats.belowThreshold} below threshold` : "")
-        + (this.stats.seen > 0 ? `, ${this.stats.seen} up to date` : "")
+      const items = [
+        [this.stats.total, `${shared ? "shared " : ""}anime`],
+        [this.stats.releasing, "releasing"],
+        [this.stats.hidden, "hidden"],
+        [this.stats.belowThreshold, "below threshold"],
+        [this.stats.seen, "up to date"],
+      ]
+      return items
+        .filter(([n], i) => i === 0 || n > 0)
+        .map(x => x.join(" "))
+        .join(", ")
     },
   },
   methods: {
