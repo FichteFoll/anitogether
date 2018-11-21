@@ -40,7 +40,7 @@
         :users="users"
         :hideSelectActive="hideSelectActive"
         v-if="!isBelowThreshold(entry) && !isSeen(entry)
-              && (entry.media.visible || this.hideSelectActive)"
+              && (entry.media.visible || hideSelectActive)"
       />
     </transition-group>
 
