@@ -1,13 +1,13 @@
 @import "./semantic.cyborg.min.css"
 
-/* Some overrides to fix "bad" styling */
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin);
 
+/* Some overrides to fix "bad" styling */
 :root {
   --bg: hsl(0, 0%, 7%);
   --form-bg: hsl(0, 0%, 9%);
 }
 
-@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin);
 body {
   font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
   background: var(--bg);
