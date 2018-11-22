@@ -3,7 +3,7 @@
       class="entry"
     >
       <sui-table-header-cell class="title"
-        :positive="entry.media.status === 'RELEASING'"
+        :class="{ releasing: entry.media.status === 'RELEASING' }"
         :title="entry.media.status === 'RELEASING' ? 'Releasing' : ''"
       >
         <transition name="title" mode="out-in">
@@ -64,7 +64,7 @@ export default {
 </script>
 
 <style lang="sass">
-  .title.positive a
+  .title.releasing a
     color: hsl(93, 72%, 25%)
 
   .animate .checkbox.toggle
@@ -117,10 +117,9 @@ export default {
       line-height: 0px /* unit is required */
 
   /* WHY DOES THIS NOT MATCH IM FUCKING LOSING IT */
-  .animate .checkbox.toggle /deep/ label,
-  .rowfade-enter .animate .checkbox.toggle /deep/ label,
-  .rowfade-leave-to .animate .checkbox.toggle /deep/ label,
-    min-height: 0rem
+  .rowfade-enter .animate .checkbox.toggle label,
+  .rowfade-leave-to .animate .checkbox.toggle label,
+    // min-height: 0
   .animate .checkbox.toggle
     display: block
     min-height: 0

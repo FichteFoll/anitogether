@@ -46,8 +46,6 @@ Use a recent and modern browser.
 
 Roughly ordered by priority:
 
-- dark mode
-- checkbox that softlocks "minShared" to num of users
 - cache per-user results so changing the order or adding/removing
   doesn't request data for ALL users again
 - allow removing individual entries from history

@@ -53,6 +53,11 @@
         :inputValue="hideSeen"
         @change="$emit('inputHideSeen', $event)"
       />
+      <sui-checkbox
+        label="Dark mode"
+        :inputValue="dark"
+        @change="$emit('inputDark', $event)"
+      />
     </sui-form-field>
   </sui-form-fields>
 </template>
@@ -64,6 +69,7 @@ export default {
     allShared: Boolean,
     titleFormat: String,
     hideSeen: Boolean,
+    dark: Boolean,
   },
   data () {
     return {

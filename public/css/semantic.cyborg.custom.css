@@ -1,0 +1,44 @@
+@import "./semantic.cyborg.min.css"
+
+/* Some overrides to fix "bad" styling */
+
+:root {
+  --bg: hsl(0, 0%, 7%);
+  --form-bg: hsl(0, 0%, 9%);
+}
+
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin);
+body {
+  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  background: var(--bg);
+}
+
+.ui.table {
+  font-size: 1rem;
+}
+
+.ui.celled.definition.table thead:not(.full-width) th:first-child {
+  background: var(--bg);
+  box-shadow: none;
+}
+
+.ui.table td.positive, .ui.table tr.positive {
+  background: hsl(80, 100%, 15%) !important;
+}
+
+.ui.table td.negative, .ui.table tr.negative {
+  background: hsl(0, 100%, 14%) !important;
+}
+
+.ui.selection.dropdown {
+  background: var(--form-bg);
+}
+
+.ui.form input:not([type]), .ui.form input[type=date],
+.ui.form input[type=datetime-local], .ui.form input[type=email],
+.ui.form input[type=file], .ui.form input[type=number],
+.ui.form input[type=password], .ui.form input[type=search],
+.ui.form input[type=tel], .ui.form input[type=text],
+.ui.form input[type=time], .ui.form input[type=url] {
+  background: var(--form-bg);
+}

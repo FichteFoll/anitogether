@@ -19,6 +19,8 @@
           @clearHistory="clearUserHistory"
           :hideSeen="hideSeen"
           @inputHideSeen="hideSeen = $event"
+          :dark="dark"
+          @inputDark="dark = $event"
         />
       </sui-form>
 
@@ -51,12 +53,20 @@
 
 <script>
 import Vue from 'vue'
+
 import EntryList from './components/EntryList.vue'
 import Messages from './components/Messages.vue'
 import Settings from './components/Settings.vue'
 import UsersInput from './components/UsersInput.vue'
 
 import {getMediaLists} from './query.js'
+
+
+const STYLES = {
+  light: ["css/semantic.min.css", "css/semantic.custom.css"],
+  dark: ["css/semantic.cyborg.min.css", "css/semantic.cyborg.custom.css"],
+}
+
 
 /**
  * Split a string by comma and remove duplicates.
@@ -100,6 +110,7 @@ export default {
       allShared: defaults.all,
       hiddenEntries: [],
       hideSeen: defaults.hideSeen,
+      dark: true,
       messages: [],
       // Use this to track whether hash needs to change
       // (and when we should add an entry to the history)
@@ -112,6 +123,7 @@ export default {
       if (storageHistory !== "") {
         this.userHistory = storageHistory.split(',')
       }
+      this.dark = localStorage.getItem('dark') == "true"
     } catch (e) {
       console.warn("Unable to access localStorage")
     }
@@ -177,6 +189,22 @@ export default {
     hiddenEntries () { this.updateLocation() },
     hideSeen () { this.updateLocation() },
     allShared () { this.updateLocation() },
+    dark () {
+      try {
+        localStorage.setItem('dark', this.dark)
+      } catch (e) {
+        console.warn("Unable to set localStorage")
+      }
+      document.querySelectorAll('.theme').forEach(el => el.remove())
+      for (const url of STYLES[this.dark ? 'dark' : 'light']) {
+        const newStyle = document.createElement("link")
+        newStyle.classList = ['theme']
+        newStyle.rel = 'stylesheet'
+        newStyle.type = 'text/css'
+        newStyle.href = url
+        document.head.appendChild(newStyle)
+      }
+    },
   },
   methods: {
     fetchLists () {
@@ -338,5 +366,4 @@ export default {
 
   footer
     text-align: right
-
 </style>
