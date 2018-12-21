@@ -1,3 +1,6 @@
+// https://github.com/AniList/ApiV2-GraphQL-Docs
+// https://anilist.gitbook.io/anilist-apiv2-docs/
+
 function buildQuery (userNames) {
   let query = `query WatchingProgress($status: [MediaListStatus]) {\n`
   const tmplOffset = 2
@@ -21,9 +24,7 @@ function buildQuery (userNames) {
                 romaji
                 english
                 native
-                userPreferred
               }
-              synonyms
               episodes
               nextAiringEpisode {
                 episode
@@ -36,6 +37,7 @@ function buildQuery (userNames) {
           }
         }
       }\n`
+    // TODO get nextAiringEpisode timestamp and show on hover
     if (tmplLen === 0) tmplLen = tmpl.split("\n").length - 1
     query += tmpl
   }
@@ -54,7 +56,6 @@ export function getMediaLists (userNames, status) {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      // 'Origin': 'https://anilist.co',
     },
     body: JSON.stringify({
       query,
