@@ -25,7 +25,7 @@
         class="episode progress"
         v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
                        negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
-        v-bind:title="entry.users.get(user.name).score + ' / 10'"
+        v-bind:title="`${entry.users.get(user.name).score} / 10`"
       >
         <div class="animate">
           {{ entry.users.get(user.name).progress || "" }}
@@ -37,7 +37,9 @@
         class="episode latest"
         v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }"
       >
-        <div class="animate">
+        <div class="animate"
+          v-bind:title="` / ${entry.media.episodes}`"
+        >
           {{ entry.media.latestEpisode }}
         </div>
       </sui-table-cell>
