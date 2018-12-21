@@ -61,12 +61,14 @@ import UsersInput from './components/UsersInput.vue'
 
 import {getMediaLists} from './query.js'
 
-
+import css_light from './css/light.useable.css'
+import css_dark from './css/dark.useable.css'
 const STYLES = {
-  light: ["css/semantic.min.css", "css/semantic.custom.css"],
-  dark: ["css/semantic.cyborg.min.css", "css/semantic.cyborg.custom.css"],
+  light: css_light,
+  dark: css_dark,
 }
-
+STYLES.light.use()
+console.log(STYLES)
 
 /**
  * Split a string by comma and remove duplicates.
@@ -195,15 +197,10 @@ export default {
       } catch (e) {
         console.warn("Unable to set localStorage")
       }
-      document.querySelectorAll('.theme').forEach(el => el.remove())
-      for (const url of STYLES[this.dark ? 'dark' : 'light']) {
-        const newStyle = document.createElement("link")
-        newStyle.classList = ['theme']
-        newStyle.rel = 'stylesheet'
-        newStyle.type = 'text/css'
-        newStyle.href = url
-        document.head.appendChild(newStyle)
-      }
+      const newStyle = STYLES[this.dark ? 'dark' : 'light']
+      const oldStyle = STYLES[!this.dark ? 'dark' : 'light']
+      oldStyle.unuse()
+      newStyle.use()
     },
   },
   methods: {

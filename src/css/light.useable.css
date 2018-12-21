@@ -1,4 +1,4 @@
-@import "./semantic.min.css"
+@import "~semantic-ui-css/semantic.min.css";
 
 /* Otherwise background is transparent */
 .ui.definition.table thead:not(.full-width) th:first-child {
