@@ -9,7 +9,7 @@
         <transition name="title" mode="out-in">
           <div class="animate" :key="entry.media.title.userPreferred">
             <a
-              v-bind:href="`https://anilist.co/anime/${entry.media.id}`"
+              :href="`https://anilist.co/anime/${entry.media.id}`"
               target="_blank"
             >
               {{ entry.media.title.userPreferred }}
@@ -20,12 +20,12 @@
 
       <sui-table-cell v-for="user of users"
         :key="user.name"
-        collapsing textAlign="right"
         v-if="entry.users.has(user.name)"
+        collapsing textAlign="right"
         class="episode progress"
-        v-bind:class="{paused: entry.users.get(user.name).status === 'PAUSED',
-                       negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
-        v-bind:title="`${entry.users.get(user.name).score} / 10`"
+        :class="{ paused: entry.users.get(user.name).status === 'PAUSED',
+                  negative: entry.users.get(user.name).progress !== entry.maxEpisode }"
+        :title="`Score: ${entry.users.get(user.name).score} / 10`"
       >
         <div class="animate">
           {{ entry.users.get(user.name).progress || "" }}
@@ -35,10 +35,10 @@
 
       <sui-table-cell collapsing textAlign="right"
         class="episode latest"
-        v-bind:class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }"
+        :class="{ positive: entry.maxEpisode !== entry.media.latestEpisode }"
       >
         <div class="animate"
-          v-bind:title="` / ${entry.media.episodes}`"
+          :title="`${entry.media.latestEpisode} / ${entry.media.episodes}`"
         >
           {{ entry.media.latestEpisode }}
         </div>
