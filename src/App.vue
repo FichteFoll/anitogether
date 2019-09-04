@@ -97,6 +97,7 @@ export default {
     return {
       // would like to use Maps, but Vue doesn't support those in v-for
       // https://github.com/vuejs/vue/issues/2410
+      cache: {},
       sourceEntries: {},
       users: {},
       usersInput: [],
@@ -191,19 +192,21 @@ export default {
     fetchLists () {
       const userNames = this.usersInput
       if (userNames.length === 0) return
-
-      console.log("fetching for", userNames)
-      document.title = `AniTogether - ${userNames.join(", ")}`
-      // https://stackoverflow.com/questions/36612847/how-can-i-bind-the-html-title-content-in-vuejs
       this.updateUserHistory(userNames)
 
+      const knownUsers = new Set(Object.keys(this.cache))
+      const unknownUsers = userNames.filter(name => !knownUsers.has(name))
+      if (unknownUsers.length === 0) {
+        this.finalizeUpdate()
+        return
+      }
+
+      console.log("fetching info for", unknownUsers)
       // Could show a loading icon here,
       // but responses are so fast it doesn't matter.
-      getMediaLists(userNames, "CURRENT")
+      getMediaLists(unknownUsers, "CURRENT")
         .then((json) => {
-          console.log("results for users", userNames, json)
-          this.sourceEntries = {}
-          this.users = {}
+          console.log("results for users", unknownUsers, json)
           for (const collection of Object.values(json.data)) {
             // discard custom lists as they have duplicates
             const user = collection.user
@@ -215,9 +218,9 @@ export default {
               this.showMessage("warning", `${user.name}'s list is empty`)
               continue
             }
-            Vue.set(this.sourceEntries, user.name, entries)
-            Vue.set(this.users, user.name, user)
+            Vue.set(this.cache, user.name, [user, entries])
           }
+          this.finalizeUpdate()
         })
         .catch((error) => {
           if (error instanceof Error) {
@@ -230,6 +233,20 @@ export default {
             console.error("fetch error", error)
           }
         })
+    },
+    finalizeUpdate () {
+      const sourceEntries = {}
+      const users = {}
+      for (const name of this.usersInput) {
+        const [user, entries] = this.cache[name]
+        sourceEntries[name] = entries
+        users[name] = user
+      }
+      this.sourceEntries = sourceEntries
+      this.users = users
+      // https://stackoverflow.com/questions/36612847/how-can-i-bind-the-html-title-content-in-vuejs
+      document.title = `AniTogether - ${this.usersInput.join(", ")}`
+      console.log("update done for", this.usersInput)
     },
     /**
      * Update userHistory and prevent duplicates (by using a Set).

@@ -47,7 +47,5 @@ Use a recent and modern browser.
 
 Roughly ordered by priority:
 
-- cache per-user results so changing the order or adding/removing
-  doesn't request data for ALL users again
 - option to include PAUSED anime and highlight this in the table
 - something for PLANNED shows
