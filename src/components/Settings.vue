@@ -73,7 +73,7 @@ export default {
   },
   data () {
     return {
-      current: "romaji", // need this to sync radios
+      current: this.titleFormat, // need this to sync radios
       formats: [
         { label: "Romaji",  value: "romaji" },
         { label: "English", value: "english" },
@@ -83,7 +83,7 @@ export default {
   },
   watch: {
     titleFormat () {
-      this.curret = this.titleFormat
+      this.current = this.titleFormat
     },
   },
 }
