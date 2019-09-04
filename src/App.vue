@@ -73,7 +73,7 @@ function sanitizeInput (inputString) {
   const inputArray = inputString.split(",").map(x => x.trim())
   const inputSet = new Set(inputArray)
   inputSet.delete("")
-  return Array.from(inputSet)
+  return [...inputSet]
 }
 
 // Default parameters
@@ -147,14 +147,14 @@ export default {
 
       // Compute some props on entries
       for (const entry of dstEntries.values()) {
-        const mUsers = Array.from(entry.users.values())
+        const mUsers = [...entry.users.values()]
         entry.maxEpisode = Math.max(...mUsers.map(e => e.progress))
         entry.media.visible = this.hiddenEntries.indexOf(entry.media.id) === -1
         entry.media.title.userPreferred = this.getMediaTitle(entry.media)
       }
 
       // Build sorted Array
-      const ret = Array.from(dstEntries.values())
+      const ret = [...dstEntries.values()]
       ret.sort((a, b) => a.media.title.userPreferred.localeCompare(b.media.title.userPreferred, "ja"))
       return ret
     },
@@ -254,7 +254,7 @@ export default {
      */
     updateUserHistory (userNames) {
       const userSet = new Set([...this.userHistory, ...userNames])
-      const userArray = Array.from(userSet)
+      const userArray = [...userSet]
       userArray.sort((a, b) => a.localeCompare(b))
       if (this.userHistory.toString() !== userArray.toString()) {
         this.userHistory = userArray
