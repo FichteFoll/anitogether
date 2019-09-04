@@ -62,11 +62,7 @@ import UsersInput from './components/UsersInput.vue'
 import {getMediaLists} from './query.js'
 
 
-const STYLES = {
-  light: ["css/semantic.min.css", "css/semantic.custom.css"],
-  dark: ["css/semantic.cyborg.min.css", "css/semantic.cyborg.custom.css"],
-}
-
+const LIGHT_PATH = "light.html"
 
 /**
  * Split a string by comma and remove duplicates.
@@ -110,7 +106,7 @@ export default {
       allShared: defaults.all,
       hiddenEntries: [],
       hideSeen: defaults.hideSeen,
-      dark: true,
+      dark: !location.pathname.endsWith(LIGHT_PATH),
       messages: [],
       // Use this to track whether hash needs to change
       // (and when we should add an entry to the history)
@@ -123,7 +119,7 @@ export default {
       if (storageHistory !== "") {
         this.userHistory = storageHistory.split(',')
       }
-      this.dark = localStorage.getItem('dark') == "true"
+      localStorage.removeItem('dark')
     } catch (e) {
       console.warn("Unable to access localStorage")
     }
@@ -189,22 +185,7 @@ export default {
     hiddenEntries () { this.updateLocation() },
     hideSeen () { this.updateLocation() },
     allShared () { this.updateLocation() },
-    dark () {
-      try {
-        localStorage.setItem('dark', this.dark)
-      } catch (e) {
-        console.warn("Unable to set localStorage")
-      }
-      document.querySelectorAll('.theme').forEach(el => el.remove())
-      for (const url of STYLES[this.dark ? 'dark' : 'light']) {
-        const newStyle = document.createElement("link")
-        newStyle.classList = ['theme']
-        newStyle.rel = 'stylesheet'
-        newStyle.type = 'text/css'
-        newStyle.href = url
-        document.head.appendChild(newStyle)
-      }
-    },
+    dark () { this.updateLocation() },
   },
   methods: {
     fetchLists () {
@@ -319,12 +300,22 @@ export default {
         .filter(([k, v]) => v != defaults[k])
         .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
         .join('&')
-      const newUrl = location.origin + location.pathname + location.search + hash
 
-      const shouldReplace = Object.entries(params)
+      let shouldReplace = Object.entries(params)
         .filter(([k, v]) => v != this.oldParams[k])
         .every(([k]) => replaceFor.has(k))
 
+      let newPath = location.pathname
+      if (newPath.endsWith(LIGHT_PATH) && this.dark) {
+        newPath = newPath.substring(0, newPath.length - LIGHT_PATH.length)
+        shouldReplace = false
+      }
+      else if (!newPath.endsWith(LIGHT_PATH) && !this.dark) {
+        newPath += LIGHT_PATH
+        shouldReplace = false
+      }
+
+      const newUrl = location.origin + newPath + location.search + hash
       if (shouldReplace) {
         location.assign(newUrl)
       } else {

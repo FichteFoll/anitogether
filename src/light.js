@@ -7,7 +7,7 @@ import App from './App.vue'
 
 Vue.config.productionTip = false
 
-import './css/main.scss'
+import './css/light.scss'
 
 export const vm = new Vue({
   render (h) { return h(App) },
