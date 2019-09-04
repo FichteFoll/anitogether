@@ -24,10 +24,11 @@ Thanks to [AniList][] and its very usable API.
 - Highlight anime with unwatched episodes
 - Highlight users that are behind compared to the "leader"
   (with the most episodes watched)
-- **Simply copy the URL to share your current view with others**
 - Save a list of previously entered user names for quick access
 - Hide shows you don't care about
+  (e.g. where everyone is up to date)
 - Fancy animations (that are almost entirely fluid)
+- **Simply copy the URL to share with others**
 
 ![Screenshot](./screenshot.png)
 
@@ -48,8 +49,5 @@ Roughly ordered by priority:
 
 - cache per-user results so changing the order or adding/removing
   doesn't request data for ALL users again
-- allow removing individual entries from history
 - option to include PAUSED anime and highlight this in the table
 - something for PLANNED shows
-- explore more visual approach where columns are the episode number
-  and the user's avatar is inserted in the cells; needs smart collapsing
