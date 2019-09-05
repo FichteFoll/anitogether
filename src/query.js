@@ -16,7 +16,6 @@ function buildQuery (userNames) {
           }
         }
         lists {
-          isCustomList
           entries {
             media {
               id

@@ -208,10 +208,11 @@ export default {
         .then((json) => {
           console.log("results for users", unknownUsers, json)
           for (const collection of Object.values(json.data)) {
-            // discard custom lists as they have duplicates
             const user = collection.user
+            // Custom lists cause us to collect duplicates,
+            // but the computed `entries` prop doesn't care about them.
             const entries = collection.lists.reduce(
-              (sum, x) => !x.isCustomList ? sum.concat(x.entries) : sum,
+              (sum, x) => sum.concat(x.entries),
               []
             )
             if (entries.length === 0) {
