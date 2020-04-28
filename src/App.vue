@@ -81,7 +81,7 @@ const defaults = {
   users: "",
   format: "romaji",
   minShared: 2,
-  hideSeen: false,
+  hideSeen: true,
   all: false,
   hide: "",
 }
