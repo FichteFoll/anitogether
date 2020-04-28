@@ -281,19 +281,20 @@ export default {
 
       const inputParsers = {
         users: sanitizeInput,
-        // format: (x) => x,
+        // format: x => x,
         minShared: Number,
-        hideSeen: (x) => x == 'true',
-        all: (x) => x == 'true',
-        hide: (x) => sanitizeInput(x).map(Number),
+        hideSeen: x => x == 'true',
+        all: x => x == 'true',
+        hide: x => sanitizeInput(x).map(Number),
       }
 
       const hash2Obj = location.hash.substring(1)
         .split("&")
-        .filter((x) => x !== "")
-        .reduce((acc, elem) => {
+        .filter(x => x !== "")
+        .reduce(
+          (acc, elem) => {
             const [key, input] = elem.split("=")
-            const parser = inputParsers[key] || ((x) => x)
+            const parser = inputParsers[key] || (x => x)
             acc[key] = parser(decodeURIComponent(input))
             return acc
           },
