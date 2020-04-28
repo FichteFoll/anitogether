@@ -49,3 +49,4 @@ Roughly ordered by priority:
 
 - option to include PAUSED anime and highlight this in the table
 - something for PLANNED shows
+- live username search via API
