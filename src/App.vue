@@ -78,12 +78,12 @@ function sanitizeInput (inputString) {
 
 // Default parameters
 const defaults = {
-  users: "",
+  users: [],
   format: "romaji",
   minShared: 2,
   hideSeen: true,
   all: false,
-  hide: "",
+  hide: [],
 }
 
 export default {
@@ -279,11 +279,24 @@ export default {
         return false
       }
 
+      const inputParsers = {
+        users: sanitizeInput,
+        // format: (x) => x,
+        minShared: Number,
+        hideSeen: (x) => x == 'true',
+        all: (x) => x == 'true',
+        hide: (x) => sanitizeInput(x).map(Number),
+      }
+
       const hash2Obj = location.hash.substring(1)
         .split("&")
-        .map(v => v.split("="))
-        .reduce(
-          (pre, [key, value]) => ({ ...pre, [key]: decodeURIComponent(value) }),
+        .filter((x) => x !== "")
+        .reduce((acc, elem) => {
+            const [key, input] = elem.split("=")
+            const parser = inputParsers[key] || ((x) => x)
+            acc[key] = parser(decodeURIComponent(input))
+            return acc
+          },
           {}
         )
       const params = {...defaults, ...hash2Obj}
@@ -291,12 +304,12 @@ export default {
       // Set data
       if (!updateIfChanged('oldParams', params)) return // short-circuit
       // TODO this causes updateLocation to be called 4 times on first load
-      updateIfChanged('usersInput', sanitizeInput(params.users))
+      updateIfChanged('usersInput', params.users)
       updateIfChanged('titleFormat', params.format)
-      updateIfChanged('minShared', Number(params.minShared))
-      updateIfChanged('hideSeen', params.hideSeen == 'true')
-      updateIfChanged('allShared', params.all == 'true')
-      updateIfChanged('hiddenEntries', sanitizeInput(params.hide).map(Number))
+      updateIfChanged('minShared', params.minShared)
+      updateIfChanged('hideSeen', params.hideSeen)
+      updateIfChanged('allShared', params.all)
+      updateIfChanged('hiddenEntries', params.hide)
     },
     /**
      * Update location hash parameters.
