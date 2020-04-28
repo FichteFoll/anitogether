@@ -100,18 +100,18 @@ export default {
       cache: {},
       sourceEntries: {},
       users: {},
-      usersInput: [],
+      usersInput: defaults.users,
       userHistory: [],
       titleFormat: defaults.format,
       minShared: defaults.minShared,
       allShared: defaults.all,
-      hiddenEntries: [],
+      hiddenEntries: defaults.hide,
       hideSeen: defaults.hideSeen,
       dark: !location.pathname.endsWith(LIGHT_PATH),
       messages: [],
       // Use this to track whether hash needs to change
       // (and when we should add an entry to the history)
-      oldParams: {},
+      oldParams: defaults,
     }
   },
   created () {
