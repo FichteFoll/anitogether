@@ -77,7 +77,7 @@ function sanitizeInput (inputString) {
 }
 
 // Default parameters
-const defaults = {
+const DEFAULTS = {
   users: [],
   format: "romaji",
   minShared: 2,
@@ -100,18 +100,18 @@ export default {
       cache: {},
       sourceEntries: {},
       users: {},
-      usersInput: defaults.users,
+      usersInput: DEFAULTS.users,
       userHistory: [],
-      titleFormat: defaults.format,
-      minShared: defaults.minShared,
-      allShared: defaults.all,
-      hiddenEntries: defaults.hide,
-      hideSeen: defaults.hideSeen,
+      titleFormat: DEFAULTS.format,
+      minShared: DEFAULTS.minShared,
+      allShared: DEFAULTS.all,
+      hiddenEntries: DEFAULTS.hide,
+      hideSeen: DEFAULTS.hideSeen,
       dark: !location.pathname.endsWith(LIGHT_PATH),
       messages: [],
       // Use this to track whether hash needs to change
       // (and when we should add an entry to the history)
-      oldParams: defaults,
+      oldParams: DEFAULTS,
     }
   },
   created () {
@@ -299,11 +299,12 @@ export default {
           },
           {}
         )
-      const params = {...defaults, ...hash2Obj}
+      const params = {...DEFAULTS, ...hash2Obj}
 
       // Set data
       if (!updateIfChanged('oldParams', params)) return // short-circuit
-      // TODO this causes updateLocation to be called 4 times on first load
+      // TODO this causes updateLocation to be called for every changed input,
+      // especially on first load.
       updateIfChanged('usersInput', params.users)
       updateIfChanged('titleFormat', params.format)
       updateIfChanged('minShared', params.minShared)
@@ -316,8 +317,8 @@ export default {
      */
     updateLocation () {
       const params = {
-        // Must keep same order as defaults, so we use rest spread
-        ...defaults,
+        // Must keep same order as DEFAULTS, so we use rest spread
+        ...DEFAULTS,
         users: this.usersInput.join(","),
         format: this.titleFormat,
         minShared: this.minShared,
@@ -328,7 +329,7 @@ export default {
       const replaceFor = new Set(["users"])
 
       const hash = "#" + Object.entries(params)
-        .filter(([k, v]) => v != defaults[k])
+        .filter(([k, v]) => v != DEFAULTS[k])
         .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
         .join('&')
 
