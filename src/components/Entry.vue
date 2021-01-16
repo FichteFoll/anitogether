@@ -28,7 +28,7 @@
         :title="`Score: ${entry.users.get(user.name).score} / 10`"
       >
         <div class="animate">
-          {{ entry.users.get(user.name).progress || "" }}
+          {{ entry.users.get(user.name).progress || "0" }}
         </div>
       </sui-table-cell>
       <sui-table-cell v-else></sui-table-cell>
